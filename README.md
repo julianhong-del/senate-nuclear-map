@@ -1,6 +1,6 @@
 # Senate Nuclear Map — setup
 
-A single-page web app: `index.html` (the app, with the graph library inlined) and `people.json` (the roster: 100 senators, 24 committees and 70 subcommittees with chair/ranking roles, committee staff, nuclear relevance and priority scores).
+A single-page wesb app: `index.html` (the app, with the graph library inlined) and `people.json` (the roster: 100 senators, 24 committees and 70 subcommittees with chair/ranking roles, committee staff, nuclear relevance and priority scores).
 
 Notes, meetings and referrals are stored in one of three places, chosen automatically when the page loads:
 
