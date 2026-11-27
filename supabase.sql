@@ -3,7 +3,7 @@
 -- One generic table holds every record the app writes (contacts, added people, referral links).
 
 create table if not exists public.docs (
-  collection  text not null check (collection in ('contacts', 'people', 'links')),
+  collection  text not null check (collection in ('contacts', 'people', 'links', 'lists', 'tasks', 'team')),
   id          text not null,
   data        jsonb not null default '{}'::jsonb,
   updated_at  timestamptz not null default now(),

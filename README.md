@@ -1,8 +1,8 @@
 # Senate Nuclear Map — setup
 
-A single-page wesb app: `index.html` (the app, with the graph library inlined) and `people.json` (the roster: 100 senators, 24 committees and 70 subcommittees with chair/ranking roles, committee staff, nuclear relevance and priority scores).
+A single-page web app: `index.html` (the app, with the graph library inlined) and `people.json` (the roster: 100 senators, 24 committees and 70 subcommittees with chair/ranking roles, committee staff, nuclear relevance and priority scores).
 
-Notes, meetings and referrals are stored in one of three places, chosen automatically when the page loads:
+Notes, interactions, tasks, lists and referrals are stored in one of three places, chosen automatically when the page loads:
 
 | Where | When | Who sees it |
 |---|---|---|
@@ -34,9 +34,12 @@ Either host serves over HTTPS, which is required for sign-in to work.
 Supabase is the right choice here: a hosted Postgres database with built-in email/password auth and row-level security, free tier is plenty, and the app talks to it directly from the browser with no server of your own.
 
 1. **Create a project** at https://supabase.com → New project. Pick a region near Washington (us-east-1). Save the database password somewhere safe (you will not need it in the app).
-2. **Create the table and policies**: SQL Editor → New query → paste the contents of `supabase.sql` → Run. This creates `docs` (the data), `docs_history` (an audit trail), and policies so that *only signed-in users* can read or write. The public "anon" key by itself can do nothing.
+2. **Create the table and policies**: SQL Editor → New query → paste the contents of `supabase.sql` → Run. (If you ran an older version before lists, tasks and team existed, run `supabase-update.sql` once instead.) This creates `docs` (the data), `docs_history` (an audit trail), and policies so that *only signed-in users* can read or write. The public "anon" key by itself can do nothing.
 3. **Turn off public sign-up**: Authentication → Providers → Email → switch off *Allow new users to sign up* (keep *Email* enabled). Optionally also require a minimum password length (Authentication → Policies).
-4. **Create your team's accounts**: Authentication → Users → *Add user* → *Create new user* → enter email + a temporary password, tick *Auto confirm user*. Send each person their password out of band and ask them to change it (Supabase → Users → "Send password recovery" also works).
+4. **Add your team (two ways):**
+   - *Invite by email (recommended):* Authentication → Users → **Invite user** → enter their email → Send. They receive a Supabase email; the link opens your site, which asks them to choose a password and signs them in. For this to work, first set Authentication → URL Configuration → **Site URL** to your site address (e.g. `https://julianhong-del.github.io/senate-nuclear-map/`) and add the same address under **Redirect URLs**.
+   - *Create directly:* Authentication → Users → **Add user → Create new user** → email + temporary password, tick *Auto Confirm User*. Tell them the password out of band; they can change it with *Forgot password?* on the sign-in form.
+   - To remove someone: Authentication → Users → … → Delete user. Their access ends immediately.
 5. **Copy the connection details**: Project Settings → API → *Project URL* and the *anon public* key.
 6. **Connect the app**: open your site → Settings → paste the URL and anon key → *Save and connect*. The page reloads; sign in with the account from step 4. Everyone on the team does the same once per browser (or bake the two values into `index.html` — see below — so nobody has to paste anything).
 
@@ -69,19 +72,29 @@ Optional hardening: enable MFA/TOTP for users (Authentication → Providers → 
 
 ---
 
-## 3. Keeping the roster current ("self-updating")
+## 3. Automatic updates (no manual work)
 
-The roster (`people.json`) is static data in the repo; notes live in Supabase. To refresh the roster:
+Two GitHub Actions in `.github/workflows/` keep the site current. They commit to the repo, and GitHub Pages redeploys on every commit.
 
-- Re-run the research with Claude (the scheduled task that built this dashboard can regenerate `people.json`), commit the new file, and the site updates on the next deploy. Notes are keyed by person id (`sen-risch-id`), so they survive roster refreshes as long as ids stay the same.
-- In January 2027 the 120th Congress seats and committee rosters change; plan a refresh then. Twenty-one senators are leaving; their notes remain attached to their ids for the record.
+| Workflow | Runs | What it does |
+|---|---|---|
+| `news.yml` | every day 6:17 am ET | `scripts/fetch_news.py` pulls nuclear-fuel, NRC, DOE, reactor and market headlines (Google News RSS plus trade/agency feeds) and the latest coverage of every priority-5 senator, writes `news.json`. The **News** tab and each senator's "In the news" read it. |
+| `roster.yml` | Mondays, plus Jan 4–20 | `scripts/update_roster.py` refreshes senators, parties, committee seats, chairs and ranking members from the public-domain `unitedstates/congress-legislators` dataset (updated by its maintainers within days of changes). It keeps every priority, note and record you have; new senators arrive with priority 2 and a "review" flag; departed senators drop off the roster (their notes stay in Supabase under their id). |
 
----
+**One-time setup so the Actions can commit:** repo → Settings → Actions → General → *Workflow permissions* → **Read and write permissions** → Save. Then Actions tab → pick a workflow → **Run workflow** once to confirm it goes green.
 
-## 4. Day-to-day
+What still needs a person (or Claude): priority scores and nuclear records for *new* senators, committee staff names, and the bills list. Ask Claude to refresh those every few months or after the January reshuffle; it regenerates `people.json` and you upload it.
+
+## 4. Team
+
+Every signed-in person is listed under Settings → Team the first time they sign in. Tasks are assigned by typing `@handle` (the part of their email before the @) in a task on any person page; the assignee sees it under Today → My tasks, with a badge on Today and a toast when something new lands. There is no email notification: the site is static. If you want one, Supabase → Database → Webhooks can call an Edge Function on inserts to `docs` where `collection = 'tasks'`, and that function can send mail through Resend or Postmark; ask Claude for that function when you need it.
+
+## 5. Day-to-day
 
 - **Today** — follow-ups due (30 days) and overdue (60), priority-5 people not yet met, recent meetings, referrals waiting to be added.
 - **People** — the full roster; filter by committee from the left tree, by status or priority; click a row for the person page: properties, every committee and subcommittee with chair/ranking roles, nuclear record, state assets, linked people and sources.
+- **Bills** — the enrichment, HALEU and NRC bills with sponsors and cosponsors; click one to filter People to its backers.
+- **News** — daily headlines by topic and your priority senators in the news.
 - **Graph** — every senator and staffer around all 24 committees (nuclear committees have a bold ring). Click a node: its referrals and office links pull in and the graph zooms to it; click empty space or *Clear focus* to release them back to their orbit.
 - **Meetings** — one place to log a meeting for anyone; names in *They suggested I meet* become referral cards that you can add to the map with one click.
 - **Settings** — storage, sign-in, export/import, CSV, demo notes, theme.
