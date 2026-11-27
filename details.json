@@ -1,1 +1,27 @@
-{"generated":"","people":{}}
+{
+ "generated": "2026-11-27T21:41:14Z",
+ "people": {
+  "add-scott-duff-mwzemm02": {
+   "person_id": "add-scott-duff-mwzemm02",
+   "name": "Scott Duff",
+   "status": "ready",
+   "generated": "2026-11-27T21:41:14Z",
+   "confidence": "medium",
+   "title": "Head of Government Relations",
+   "org": "General Matter Inc.",
+   "office_id": "",
+   "committees": [],
+   "state": "KY",
+   "why": "He is General Matter's own head of government relations, the company's lead point of contact for Senate offices and Kentucky officials on the Paducah enrichment plant.",
+   "record": "Scott G. Duff has been Head of Government Relations at General Matter Inc. since August 2025 (LegiStorm). Before joining the company he was a congressional staffer: LegiStorm's salary records show continuous House/Senate employment from 23 April 2018 through at least 18 October 2024, but the employing offices, titles and pay are behind LegiStorm's paywall, so which member or committee he served could not be confirmed from public pages; LegiStorm also flags him as a registered lobbyist, and a Kentucky Legislative Ethics Commission listing exists under his name for 2026. In public, WLKY quoted him on 5 March 2026 when the Kentucky Nuclear Energy Development Authority announced $10 million in grants across six awardees including General Matter: he said the company hopes to bring more investment to Kentucky and wants to see onshoring of nuclear-fuel manufacturing in the Commonwealth. Context: General Matter leased part of DOE's Paducah Gaseous Diffusion Plant in August 2025 for a roughly $1.5 billion LEU/HALEU enrichment facility and won a $900 million DOE enriched-uranium contract in January 2026.",
+   "works_with": [],
+   "sources": [
+    "https://www.legistorm.com/person/bio/289058/Scott_G_Duff.html",
+    "https://www.legistorm.com/person/Scott_G_Duff/289058.html",
+    "https://www.wlky.com/article/kentucky-nuclear-energy-grant-announcement/70629537",
+    "https://en.wikipedia.org/wiki/General_Matter"
+   ],
+   "note": "Prior congressional office(s) 2018-2024 are gated on LegiStorm and could not be identified; LinkedIn, the Paducah Chamber Frankfort-trip list and the KLEC lobbyist page could not be opened. He is a General Matter employee, not Senate staff, so office_id and committees are empty."
+  }
+ }
+}
