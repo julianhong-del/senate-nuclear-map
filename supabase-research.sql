@@ -17,6 +17,9 @@ alter table public.docs add constraint docs_collection_check
 -- ---------------------------------------------------------------------------------------------
 -- 2. Read-only access for the scheduled task (anon key): look-up requests and hand-added people only.
 --    Notes, meetings, tasks, lists and team stay readable by signed-in accounts only.
+--    The grant gives the public role the table privilege; the policy below then limits it to those two collections.
+grant usage on schema public to anon;
+grant select on public.docs to anon;
 drop policy if exists "anon reads research requests" on public.docs;
 create policy "anon reads research requests" on public.docs
   for select to anon using (collection in ('research', 'people'));
