@@ -123,7 +123,7 @@ label.f textarea { min-height: 72px; resize: vertical; }
 .rel { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--muted); margin: 4px 0 2px; } .rel b { color: var(--fg); font-variant-numeric: tabular-nums; }
 .bill { border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; margin-bottom: 10px; } .bill .bh { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; } .bill .bh h3 { font-size: 15px; } .bill .bh .num { font-family: var(--mono); font-size: 11.5px; color: var(--muted); } .bill .st { font-size: 12.5px; color: var(--muted); margin: 4px 0; } .bill .sp { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
 .lists .leaf.active { font-weight: 600; }
-.gate[hidden] { display: none !important; } .gate { position: fixed; inset: 0; z-index: 50; background: var(--bg); display: grid; place-items: center; padding: 20px; } .gate .box { width: 100%; max-width: 380px; display: grid; gap: 12px; } .gate h2 { font-size: 26px; } .gate .brand { padding: 0; margin-bottom: 6px; }
+.gate[hidden] { display: none !important; } .ws[inert] { filter: blur(6px); pointer-events: none; user-select: none; } .gate { position: fixed; inset: 0; z-index: 50; background: var(--bg); display: grid; place-items: center; padding: 20px; } .gate .box { width: 100%; max-width: 380px; display: grid; gap: 12px; } .gate h2 { font-size: 26px; } .gate .brand { padding: 0; margin-bottom: 6px; }
 .task { display: grid; grid-template-columns: 18px 1fr auto; gap: 8px; align-items: start; padding: 6px 0; border-bottom: 1px dashed var(--line); font-size: 13px; } .task input[type=checkbox] { margin-top: 3px; accent-color: var(--ink); } .task.done .tt { text-decoration: line-through; color: var(--muted); } .task .meta { font-size: 11.5px; color: var(--muted); } .task .who { font-family: var(--mono); font-size: 11px; border: 1px solid var(--line-strong); border-radius: 4px; padding: 0 5px; } .task .who.me { background: var(--ink); color: var(--ink-fg); border-color: var(--ink); }
 .newsrow { display: grid; grid-template-columns: 92px 1fr; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); } .newsrow .d { font-family: var(--mono); font-size: 11px; color: var(--muted); padding-top: 3px; } .newsrow a { font-weight: 600; text-decoration: none; } .newsrow a:hover { text-decoration: underline; } .newsrow .src { font-size: 12px; color: var(--muted); } .newsrow .sum { font-size: 13px; margin-top: 2px; color: var(--fg); }
 .notif { display: inline-block; min-width: 16px; padding: 0 5px; border-radius: 999px; background: var(--ink); color: var(--ink-fg); font-size: 10.5px; text-align: center; margin-left: 6px; }
@@ -250,33 +250,26 @@ label.f input:focus, label.f textarea:focus, label.f select:focus, .toolbar inpu
 .picker, .mention-menu, .results { transform-origin: top left; animation: popin .18s var(--spring); } @keyframes popin { from { opacity: 0; transform: translateY(-4px) scale(.98); } to { opacity: 1; transform: none; } }
 .toast { transform: translateX(-50%) translateY(8px); transition: opacity .22s var(--ease), transform .3s var(--spring); } .toast.show { transform: translateX(-50%) translateY(0); }
 .fold[open] > .fold-body, .fold[open] > ul, .fold[open] > div { animation: foldin .22s var(--ease); } @keyframes foldin { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
-.mrow, .task, .briefrow, .newsrow, .item { animation: rowin .26s var(--ease) both; } @keyframes rowin { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
-.mrow:nth-child(2), .task:nth-child(2), .briefrow:nth-child(2), .newsrow:nth-child(2), .item:nth-child(2) { animation-delay: .03s } .mrow:nth-child(3), .task:nth-child(3), .briefrow:nth-child(3), .newsrow:nth-child(3), .item:nth-child(3) { animation-delay: .06s } .mrow:nth-child(4), .task:nth-child(4), .newsrow:nth-child(4), .item:nth-child(4) { animation-delay: .09s } .mrow:nth-child(5), .task:nth-child(5), .newsrow:nth-child(5), .item:nth-child(5) { animation-delay: .12s } .mrow:nth-child(n+6), .task:nth-child(n+6), .newsrow:nth-child(n+6), .item:nth-child(n+6) { animation-delay: .15s }
+.mrow, .task, .newsrow, .item { animation: rowin .26s var(--ease) both; } @keyframes rowin { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+.mrow:nth-child(2), .task:nth-child(2), .newsrow:nth-child(2), .item:nth-child(2) { animation-delay: .03s } .mrow:nth-child(3), .task:nth-child(3), .newsrow:nth-child(3), .item:nth-child(3) { animation-delay: .06s } .mrow:nth-child(4), .task:nth-child(4), .newsrow:nth-child(4), .item:nth-child(4) { animation-delay: .09s } .mrow:nth-child(5), .task:nth-child(5), .newsrow:nth-child(5), .item:nth-child(5) { animation-delay: .12s } .mrow:nth-child(n+6), .task:nth-child(n+6), .newsrow:nth-child(n+6), .item:nth-child(n+6) { animation-delay: .15s }
 .task input[type=checkbox] { transition: transform .15s var(--spring); } .task input[type=checkbox]:checked { transform: scale(1.12); } .task .tt { transition: color .2s var(--ease), opacity .2s var(--ease); } .task.done .tt { opacity: .7; }
 .stat:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(0,0,0,.06); } table.people tr.row td { transition: background-color .14s var(--ease); }
 .navs a[aria-current="page"] { box-shadow: inset 2px 0 0 var(--ink); }
 .newp { animation: unfold .28s var(--ease); transform-origin: top; } @keyframes unfold { from { opacity: 0; transform: translateY(-6px) scaleY(.98); } to { opacity: 1; transform: none; } }
-.briefsec, .tracker, .card, .bill { transition: box-shadow .2s var(--ease); }
+.tracker, .card, .bill { transition: box-shadow .2s var(--ease); }
 .since { transition: transform .2s var(--spring); } .logbox.open ~ * .since, .tracker:has(.logbox.open) .since { transform: scale(1.02); }
 svg.net .hubnode, svg.net .subnode { transition: r .36s var(--spring), fill .2s var(--ease), stroke .2s var(--ease), stroke-width .2s var(--ease), fill-opacity .2s var(--ease); }
 svg.net .node.inside .shape { animation: dotin .32s var(--spring) both; } @keyframes dotin { from { transform: scale(.4); } to { transform: scale(1); } }
 .rpanel { animation: slidein .26s var(--ease); } @keyframes slidein { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation: none !important; transition: none !important; } }
-/* new person panel inside the meeting and brief forms */
+/* new person panel inside the meeting form */
 .newp { background: var(--bg); border: 1px dashed var(--line-strong); border-radius: 8px; padding: 10px 12px; display: grid; gap: 8px; animation: viewin .2s ease; }
 .newp .hdr { font-weight: 600; font-size: 13px; }
-/* research briefs */
-.briefsec { border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; margin: 14px 0 20px; background: var(--bg); }
-.briefsec h3 { font-size: 15px; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; margin-bottom: 6px; }
-.briefsec .bsum { margin: 2px 0 8px; font-size: 13.5px; }
-.briefsec .bsec { margin: 6px 0; } .briefsec .bsec h4 { margin-bottom: 2px; } .briefsec .bsec ul { font-size: 13px; }
-.briefsec .conf { font-size: 11px; border: 1px solid var(--line-strong); border-radius: 999px; padding: 0 7px; color: var(--muted); font-weight: 400; }
-.briefrow { display: grid; grid-template-columns: 1fr auto; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--line); align-items: start; } .briefrow:last-child { border-bottom: 0; } .briefrow .nm { font-weight: 600; } .briefrow .ctx { font-size: 12.5px; color: var(--muted); margin-top: 2px; white-space: pre-wrap; } .briefrow .act { display: flex; gap: 4px; align-items: center; }
 /* subcommittees drawn inside an opened committee circle, lettered */
 svg.net .node.expanded .hubnode { fill: var(--surface); fill-opacity: 1; stroke: var(--fg); stroke-width: 2; }
 svg.net .node.inside .subnode { fill: var(--bg); stroke: var(--fg); stroke-width: 1.4; } svg.net .node.inside .subnode.t3 { stroke-width: 2.6; }
 svg.net .node.inside.selected .subnode { fill: var(--ink); stroke: var(--ink); }
-svg.net text.badge { font-size: 9.5px; font-weight: 700; stroke: none; paint-order: normal; display: none; fill: var(--fg); }
+svg.net text.badge { font-size: 8.5px; font-weight: 700; letter-spacing: -.02em; stroke: none; paint-order: normal; display: none; fill: var(--fg); }
 svg.net .node.inside text.badge { display: block; } svg.net .node.inside.selected text.badge { fill: var(--ink-fg); }
 svg.net .node.inside .shape { transition: transform .2s cubic-bezier(.2,.8,.2,1); }
 .cmt .sublist li { margin: 3px 0; } .cmt .sublist .ltr { display: inline-block; min-width: 18px; font-family: var(--mono); font-weight: 600; font-size: 11.5px; }
@@ -293,7 +286,10 @@ svg.net .node.inside .shape { transition: transform .2s cubic-bezier(.2,.8,.2,1)
 }
 </style>
 
-<div class="gate" id="gate" hidden><div class="box"><div class="brand"><span class="mark">GM</span> General Matter Internship Project</div><h2>Sign in</h2><div class="small muted">Team access only. Accounts are created by the administrator.</div><label class="f">Email<input type="email" id="g-email" autocomplete="username"></label><label class="f">Password<input type="password" id="g-pass" autocomplete="current-password"></label><button type="button" class="btn" id="g-login">Sign in</button><button type="button" class="small muted" id="g-forgot" style="text-decoration:underline;justify-self:start">Forgot password?</button><div class="small muted" id="g-msg"></div></div></div>
+<div class="gate" id="gate"><div class="box"><div class="brand"><span class="mark">GM</span> General Matter Internship Project</div>
+  <div id="g-signin"><h2>Sign in</h2><div class="small muted">Team access only. Accounts are created by the administrator.</div><label class="f" style="margin-top:12px">Email<input type="email" id="g-email" autocomplete="username"></label><label class="f" style="margin-top:8px">Password<input type="password" id="g-pass" autocomplete="current-password"></label><button type="button" class="btn" id="g-login" style="margin-top:12px;width:100%">Sign in</button><button type="button" class="small muted" id="g-forgot" style="text-decoration:underline;justify-self:start;margin-top:8px">Forgot password?</button></div>
+  <div id="g-connect" hidden><h2>Connect the team database</h2><div class="small muted">This copy is not linked to the team's Supabase project yet. The administrator enters the project URL and the public anon key once per browser (Supabase → Project settings → API).</div><label class="f" style="margin-top:12px">Project URL<input type="url" id="gc-url" placeholder="https://xxxx.supabase.co" autocomplete="off"></label><label class="f" style="margin-top:8px">Anon (publishable) key<input type="text" id="gc-key" placeholder="eyJ… or sb_publishable_…" autocomplete="off"></label><button type="button" class="btn" id="gc-save" style="margin-top:12px;width:100%">Connect</button></div>
+  <div class="small muted" id="g-msg" style="margin-top:8px"></div></div></div>
 <div class="ws">
   <aside class="side" id="side">
     <div class="brand"><span class="mark">GM</span> General Matter Internship Project</div>
@@ -303,7 +299,6 @@ svg.net .node.inside .shape { transition: transform .2s cubic-bezier(.2,.8,.2,1)
       <a href="#people" data-page="people">People<span class="cnt" id="n-people"></span></a>
       <a href="#graph" data-page="graph">Graph</a>
       <a href="#meetings" data-page="meetings">Meetings<span class="cnt" id="n-meetings"></span></a>
-      <a href="#briefs" data-page="briefs">Briefs<span class="cnt" id="n-briefs"></span></a>
       <a href="#tasks" data-page="tasks">Tasks<span class="cnt" id="n-tasks"></span></a>
       <a href="#bills" data-page="bills">Bills<span class="cnt" id="n-bills"></span></a>
       <a href="#news" data-page="news">News<span class="cnt" id="n-news"></span></a>
@@ -368,7 +363,7 @@ svg.net .node.inside .shape { transition: transform .2s cubic-bezier(.2,.8,.2,1)
       <div class="legend">
         <div class="k"><i style="background:var(--party-r)"></i> Republican</div><div class="k"><i style="background:var(--party-d)"></i> Democrat</div><div class="k"><i style="background:var(--party-i)"></i> Independent</div>
         <div class="k"><i class="sq" style="background:var(--staff)"></i> Staff</div><div class="k"><i class="hub"></i> Committee · <i class="hub" style="width:7px;height:7px"></i> subcommittee</div>
-        <div class="k">Click a committee to light its members · click it again to open its lettered subcommittees · scroll to zoom</div>
+        <div class="k">Click a committee to light its members · click it again to open its numbered subcommittees · scroll to zoom</div>
       </div>
       <div class="tip" id="tip" hidden></div>
     </div>
@@ -385,18 +380,6 @@ svg.net .node.inside .shape { transition: transform .2s cubic-bezier(.2,.8,.2,1)
       </div>
       <div class="toolbar"><input type="search" id="mq" placeholder="Search interactions" aria-label="Search interactions"><select id="mf-type" aria-label="Type"><option value="">Any type</option><option>Meeting</option><option>Call</option><option>Email</option><option>Event</option><option>Hearing</option><option>Note</option></select><select id="mf-sent" aria-label="Sentiment"><option value="">Any sentiment</option><option value="pos">Positive</option><option value="neu">Neutral</option><option value="neg">Negative</option></select><select id="mf-issue" aria-label="Issue"><option value="">Any issue</option></select><select id="mf-range" aria-label="Range"><option value="">All time</option><option value="7">Last 7 days</option><option value="30">Last 30 days</option><option value="90">Last 90 days</option></select><span class="small muted" id="mcount"></span></div>
       <div class="mlist" id="mlist"></div>
-    </div></div>
-
-    <!-- Briefs -->
-    <div class="view" id="view-briefs"><div class="pad">
-      <div class="week"><h2>Briefs</h2><span class="sub" id="bf-sub">Research on anyone before you meet them</span></div>
-      <div class="newmeet" id="bf-form">
-        <div class="inline"><label class="f">Who<input type="text" id="bf-name" placeholder="Anyone on the map, or a new name" autocomplete="off"></label></div>
-        <div id="bf-newp" hidden></div>
-        <label class="f"><span class="lbl" id="bf-ctx-lbl">What is the meeting about, and what you already know (optional)</span><textarea id="bf-ctx" placeholder="e.g. 20 minutes on Dec 3 about Paducah construction timing; she handles Energy-Water for the Senator"></textarea></label>
-        <div class="inline"><span class="small muted" id="bf-hint" style="flex:1">A brief lands on the person's page after the next research run; you will also see it in the list below.</span><button type="button" class="btn" id="bf-save">Request brief</button></div>
-      </div>
-      <div id="bf-lists"></div>
     </div></div>
 
     <!-- Tasks -->
@@ -425,7 +408,7 @@ svg.net .node.inside .shape { transition: transform .2s cubic-bezier(.2,.8,.2,1)
         <div class="inline"><button type="button" class="btn ghost" id="h-export">Export notes (JSON)</button><label class="btn ghost" for="h-import">Import notes<input type="file" id="h-import" accept="application/json,.json"></label><button type="button" class="btn ghost" id="h-csv">Download roster (CSV)</button><button type="button" class="btn ghost" id="h-sample">Load demo notes</button></div>
         <dl class="kv" id="data-kv"></dl>
       </div></div>
-      <div class="card"><div class="hd"><h3>Research briefs</h3><span class="small muted" id="bf-asof"></span></div><div class="bd" id="brief-settings"></div></div>
+      <div class="card"><div class="hd"><h3>Automatic details for new people</h3><span class="small muted" id="rs-asof"></span></div><div class="bd" id="research-settings"></div></div>
       <div class="card"><div class="hd"><h3>Display</h3></div><div class="bd"><div class="inline"><button type="button" class="btn ghost" id="h-theme">Toggle light / dark</button><span class="small muted">Lists live in the sidebar; bills on their own page. Follow-up is due at 30 days and overdue at 60 unless a due date is set. Shortcuts: <span class="kbd">/</span> search · <span class="kbd">Esc</span> back.</span></div></div></div>
     </div></div>
 
@@ -439,11 +422,13 @@ svg.net .node.inside .shape { transition: transform .2s cubic-bezier(.2,.8,.2,1)
 (function () {
   'use strict';
   // Optional: bake in your Supabase project so teammates do not have to enter it in Settings.
-  const APP_VERSION = '2026-11-27f';
-  const SUPABASE_URL = '';
-  const SUPABASE_ANON_KEY = '';
+  const APP_VERSION = '2026-11-27g';
+  const SUPABASE_URL = 'https://nreuqgyxojdzqzpcxwlv.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_zMrjbqvsuzX8dav-qXGd6A_Zj6MPzk1';
 
   const $ = (s) => document.querySelector(s);
+  const DEV = ['localhost', '127.0.0.1'].includes(location.hostname);
+  const devLocal = () => { try { return localStorage.getItem('snm-dev-local') === '1'; } catch (e) { return false; } };
   const DUE_DAYS = 30, OVERDUE_DAYS = 60;
   const NUKE = ['SSEG', 'SSEV', 'SSAP', 'SSAS'];
   const PSEUDO = { 'SSAP-EW': 'Appropriations — Energy and Water', 'SSAS-SF': 'Armed Services — Strategic Forces', 'SSEV-NUC': 'EPW — Nuclear Innovation and Safety', 'SSEG-EN': 'ENR — Energy subcommittee' };
@@ -455,7 +440,7 @@ svg.net .node.inside .shape { transition: transform .2s cubic-bezier(.2,.8,.2,1)
     { id: 'staff-andrew-zach', status: 'follow-up', last: 20, note: '[DEMO] Interested in the pre-license construction provision of the MORE American Fuel Act.', mentioned: ['Will Dixon'] },
   ];
   const state = { base: [], committees: {}, clist: [], asOf: '', extra: {}, contacts: {}, links: {}, selected: null, store: null, canWrite: null, page: 'today',
-    filters: { q: '', kind: '', comm: '', status: '', stance: '', list: '', bill: '', minPri: 1 }, lists: {}, tasks: {}, team: {}, news: [], newsAsOf: '', pendingFocus: null, scrollToNote: null, draft: {}, briefReqs: {}, briefs: {}, briefsAsOf: '', loaded: {}, mfilters: { type: '', sent: '', issue: '', range: '' }, sort: { k: 'priority', dir: 'desc' }, showAllLabels: false, hideFiltered: false, layout: 'committee', scope: 'committees', mq: '', treeOpen: {}, committeeView: '' };
+    filters: { q: '', kind: '', comm: '', status: '', stance: '', list: '', bill: '', minPri: 1 }, lists: {}, tasks: {}, team: {}, news: [], newsAsOf: '', pendingFocus: null, scrollToNote: null, draft: {}, researchReqs: {}, details: {}, detailsAsOf: '', extraRaw: {}, loaded: {}, mfilters: { type: '', sent: '', issue: '', range: '' }, sort: { k: 'priority', dir: 'desc' }, showAllLabels: false, hideFiltered: false, layout: 'committee', scope: 'committees', mq: '', treeOpen: {}, committeeView: '' };
 
   // ---------- helpers ----------
   const todayISO = () => new Date().toISOString().slice(0, 10);
@@ -506,37 +491,37 @@ svg.net .node.inside .shape { transition: transform .2s cubic-bezier(.2,.8,.2,1)
 
   // ---------- storage ----------
   function localStore() {
-    const KEY = 'snm-db-v1'; let data = { contacts: {}, people: {}, links: {}, lists: {}, tasks: {}, team: {}, briefs: {} }; const subs = {};
+    const KEY = 'snm-db-v1'; let data = { contacts: {}, people: {}, links: {}, lists: {}, tasks: {}, team: {}, research: {} }; const subs = {};
     try { const raw = localStorage.getItem(KEY); if (raw) { const o = JSON.parse(raw); if (o && typeof o === 'object') data = Object.assign(data, o); } } catch (e) {}
     const persist = () => { try { localStorage.setItem(KEY, JSON.stringify(data)); } catch (e) { toast('Browser storage unavailable'); } };
     const emit = (coll) => { (subs[coll] || []).forEach(fn => fn(Object.assign({}, data[coll] || {}))); };
-    return { kind: 'local', label: 'This browser only', subscribe(coll, fn) { (subs[coll] = subs[coll] || []).push(fn); fn(Object.assign({}, data[coll] || {})); }, async set(coll, id, doc) { data[coll] = data[coll] || {}; data[coll][id] = doc; persist(); emit(coll); return true; }, async del(coll, id) { if (data[coll]) delete data[coll][id]; persist(); emit(coll); return true; }, dump() { return data; }, load(o) { data = { contacts: o.contacts || {}, people: o.people || {}, links: o.links || {}, lists: o.lists || {}, tasks: o.tasks || {}, team: o.team || {}, briefs: o.briefs || {} }; persist(); ['contacts', 'people', 'links', 'lists', 'tasks', 'team', 'briefs'].forEach(emit); } };
+    return { kind: 'local', label: 'This browser only', subscribe(coll, fn) { (subs[coll] = subs[coll] || []).push(fn); fn(Object.assign({}, data[coll] || {})); }, async set(coll, id, doc) { data[coll] = data[coll] || {}; data[coll][id] = doc; persist(); emit(coll); return true; }, async del(coll, id) { if (data[coll]) delete data[coll][id]; persist(); emit(coll); return true; }, dump() { return data; }, load(o) { data = { contacts: o.contacts || {}, people: o.people || {}, links: o.links || {}, lists: o.lists || {}, tasks: o.tasks || {}, team: o.team || {}, research: o.research || {} }; persist(); ['contacts', 'people', 'links', 'lists', 'tasks', 'team', 'research'].forEach(emit); } };
   }
   function claudeStore(db) {
     const docsOf = (snap) => { const out = {}; for (const d of (snap && snap.docs ? snap.docs : [])) { const data = typeof d.data === 'function' ? d.data() : (d.data || {}); if (data) out[d.id] = data; } return out; };
-    const cache = { contacts: {}, people: {}, links: {}, lists: {}, tasks: {}, team: {}, briefs: {} };
-    return { kind: 'claude', label: 'Shared with everyone this artifact is shared with', subscribe(coll, fn) { const q = db.collection(coll); const handle = (snap) => { cache[coll] = docsOf(snap); fn(cache[coll]); }; try { q.onSnapshot(handle, (err) => setStoreStatus('Error loading ' + coll + ': ' + (err && err.code || 'unknown'))); } catch (e) { q.get().then(handle).catch(() => {}); } }, async set(coll, id, doc) { try { await db.collection(coll).doc(id).set(doc); return true; } catch (e) { const code = e && e.code ? e.code : ''; toast(code === 'not_granted' || code === 'permission_denied' ? 'No edit access' : 'Could not save'); return false; } }, async del(coll, id) { try { await db.collection(coll).doc(id).delete(); return true; } catch (e) { toast('Could not delete'); return false; } }, dump() { return cache; }, async load(o) { for (const coll of ['contacts', 'people', 'links', 'lists', 'tasks', 'team', 'briefs']) for (const [id, doc] of Object.entries(o[coll] || {})) await this.set(coll, id, doc); } };
+    const cache = { contacts: {}, people: {}, links: {}, lists: {}, tasks: {}, team: {}, research: {} };
+    return { kind: 'claude', label: 'Shared with everyone this artifact is shared with', subscribe(coll, fn) { const q = db.collection(coll); const handle = (snap) => { cache[coll] = docsOf(snap); fn(cache[coll]); }; try { q.onSnapshot(handle, (err) => setStoreStatus('Error loading ' + coll + ': ' + (err && err.code || 'unknown'))); } catch (e) { q.get().then(handle).catch(() => {}); } }, async set(coll, id, doc) { try { await db.collection(coll).doc(id).set(doc); return true; } catch (e) { const code = e && e.code ? e.code : ''; toast(code === 'not_granted' || code === 'permission_denied' ? 'No edit access' : 'Could not save'); return false; } }, async del(coll, id) { try { await db.collection(coll).doc(id).delete(); return true; } catch (e) { toast('Could not delete'); return false; } }, dump() { return cache; }, async load(o) { for (const coll of ['contacts', 'people', 'links', 'lists', 'tasks', 'team', 'research']) for (const [id, doc] of Object.entries(o[coll] || {})) await this.set(coll, id, doc); } };
   }
   function supabaseStore(url, key) {
-    const base = url.trim().replace(/\/+$/, '').replace(/\/(rest|auth|storage)\/v1$/, ''); const SKEY = 'snm-sb-session'; let session = null; const cache = { contacts: {}, people: {}, links: {}, lists: {}, tasks: {}, team: {}, briefs: {} }; const subs = {}; let timer = null;
+    const base = url.trim().replace(/\/+$/, '').replace(/\/(rest|auth|storage)\/v1$/, ''); const SKEY = 'snm-sb-session'; let session = null; const cache = { contacts: {}, people: {}, links: {}, lists: {}, tasks: {}, team: {}, research: {} }; const subs = {}; let timer = null;
     try { session = JSON.parse(localStorage.getItem(SKEY) || 'null'); } catch (e) { session = null; }
     // Invite and password-recovery emails land here with tokens in the URL fragment; turn them into a session and ask for a password.
     let needsPassword = false;
     try { const h = location.hash.startsWith('#') ? location.hash.slice(1) : ''; if (h.includes('access_token=')) { const q = new URLSearchParams(h); const at = q.get('access_token'); const rt = q.get('refresh_token'); const type = q.get('type') || ''; if (at && rt) { session = { access_token: at, refresh_token: rt, token_type: 'bearer', expires_in: Number(q.get('expires_in') || 3600), expires_at: Number(q.get('expires_at') || (Math.floor(Date.now() / 1000) + Number(q.get('expires_in') || 3600))), user: null }; needsPassword = (type === 'invite' || type === 'recovery' || type === 'signup' || type === 'magiclink'); history.replaceState(null, '', location.pathname + '#settings'); } } } catch (e) {}
     const saveSession = (s) => { session = s; try { if (s) localStorage.setItem(SKEY, JSON.stringify(s)); else localStorage.removeItem(SKEY); } catch (e) {} };
-    const headers = () => ({ apikey: key, Authorization: 'Bearer ' + (session && session.access_token ? session.access_token : key), 'Content-Type': 'application/json' });
+    const headers = () => Object.assign({ apikey: key, 'Content-Type': 'application/json' }, session && session.access_token ? { Authorization: 'Bearer ' + session.access_token } : {});
     async function refreshIfNeeded() { if (!session) return; const exp = session.expires_at ? session.expires_at * 1000 : 0; if (exp && Date.now() < exp - 60000) return; try { const r = await fetch(base + '/auth/v1/token?grant_type=refresh_token', { method: 'POST', headers: { apikey: key, 'Content-Type': 'application/json' }, body: JSON.stringify({ refresh_token: session.refresh_token }) }); if (!r.ok) throw new Error('refresh'); saveSession(await r.json()); } catch (e) { saveSession(null); } }
     const emit = (coll) => (subs[coll] || []).forEach(fn => fn(Object.assign({}, cache[coll])));
     async function pull() {
       await refreshIfNeeded(); if (!session) { setStoreStatus('Sign in to load the team notes.'); return; }
-      try { const r = await fetch(base + '/rest/v1/docs?select=collection,id,data', { headers: headers() }); if (r.status === 401) { saveSession(null); renderSettings(); setStoreStatus('Session expired. Sign in again.'); return; } if (!r.ok) throw new Error('HTTP ' + r.status); const rows = await r.json(); const next = { contacts: {}, people: {}, links: {}, lists: {}, tasks: {}, team: {}, briefs: {} }; for (const row of rows) if (next[row.collection]) next[row.collection][row.id] = row.data; for (const coll of Object.keys(next)) if (JSON.stringify(next[coll]) !== JSON.stringify(cache[coll])) { cache[coll] = next[coll]; emit(coll); } setStoreStatus('Connected to Supabase · synced ' + new Date().toLocaleTimeString()); }
+      try { const r = await fetch(base + '/rest/v1/docs?select=collection,id,data', { headers: headers() }); if (r.status === 401) { saveSession(null); renderSettings(); setStoreStatus('Session expired. Sign in again.'); return; } if (!r.ok) throw new Error('HTTP ' + r.status); const rows = await r.json(); const next = { contacts: {}, people: {}, links: {}, lists: {}, tasks: {}, team: {}, research: {} }; for (const row of rows) if (next[row.collection]) next[row.collection][row.id] = row.data; for (const coll of Object.keys(next)) if (JSON.stringify(next[coll]) !== JSON.stringify(cache[coll])) { cache[coll] = next[coll]; emit(coll); } setStoreStatus('Connected to Supabase · synced ' + new Date().toLocaleTimeString()); }
       catch (e) { setStoreStatus('Could not reach Supabase (' + e.message + '). Check the URL, the docs table and its policies.'); }
     }
     return { kind: 'supabase', label: 'Team database (Supabase)', get user() { return session && session.user ? session.user : null; },
       subscribe(coll, fn) { (subs[coll] = subs[coll] || []).push(fn); fn(Object.assign({}, cache[coll])); if (!timer) { pull(); timer = setInterval(pull, 20000); window.addEventListener('focus', pull); } },
       async set(coll, id, doc) { await refreshIfNeeded(); if (!session) { toast('Sign in to save'); return false; } try { const r = await fetch(base + '/rest/v1/docs?on_conflict=collection,id', { method: 'POST', headers: Object.assign(headers(), { Prefer: 'resolution=merge-duplicates,return=minimal' }), body: JSON.stringify({ collection: coll, id, data: doc, updated_by: session.user && session.user.email }) }); if (!r.ok) throw new Error('HTTP ' + r.status); cache[coll][id] = doc; return true; } catch (e) { toast('Could not save (' + e.message + ')'); return false; } },
       async del(coll, id) { await refreshIfNeeded(); if (!session) return false; try { const r = await fetch(base + '/rest/v1/docs?collection=eq.' + encodeURIComponent(coll) + '&id=eq.' + encodeURIComponent(id), { method: 'DELETE', headers: headers() }); if (!r.ok) throw new Error('HTTP ' + r.status); delete cache[coll][id]; return true; } catch (e) { toast('Could not delete'); return false; } },
-      dump() { return cache; }, async load(o) { for (const coll of ['contacts', 'people', 'links', 'lists', 'tasks', 'team', 'briefs']) for (const [id, doc] of Object.entries(o[coll] || {})) await this.set(coll, id, doc); ['contacts', 'people', 'links', 'lists', 'tasks', 'team', 'briefs'].forEach(emit); },
+      dump() { return cache; }, async load(o) { for (const coll of ['contacts', 'people', 'links', 'lists', 'tasks', 'team', 'research']) for (const [id, doc] of Object.entries(o[coll] || {})) await this.set(coll, id, doc); ['contacts', 'people', 'links', 'lists', 'tasks', 'team', 'research'].forEach(emit); },
       async login(email, password) { const r = await fetch(base + '/auth/v1/token?grant_type=password', { method: 'POST', headers: { apikey: key, 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }) }); const j = await r.json().catch(() => ({})); if (!r.ok) throw new Error(j.error_description || j.msg || j.message || 'Sign-in failed'); saveSession(j); await pull(); return j.user; },
       async logout() { try { await fetch(base + '/auth/v1/logout', { method: 'POST', headers: headers() }); } catch (e) {} saveSession(null); for (const c of Object.keys(cache)) { cache[c] = {}; emit(c); } },
       get needsPassword() { return needsPassword; },
@@ -550,15 +535,16 @@ svg.net .node.inside .shape { transition: transform .2s cubic-bezier(.2,.8,.2,1)
     let db = null; try { db = window.claude && window.claude.use ? await window.claude.use('db') : null; } catch (e) { db = null; }
     const cfg = sbConfig();
     if (db) { state.store = claudeStore(db); try { const user = await window.claude.use('user'); if (user && user.can) { const w = await user.can('data.write'); state.canWrite = (w === null) ? null : !!w; } } catch (e) { state.canWrite = null; } setStoreStatus('Notes are saved in this artifact and shared with everyone it is shared with.'); }
-    else if (cfg.url && cfg.key) { state.store = supabaseStore(cfg.url, cfg.key); state.canWrite = true; await state.store.hydrate(); if (state.store.needsPassword) { location.hash = 'settings'; } }
-    else { state.store = localStore(); state.canWrite = true; setStoreStatus('Notes are saved in this browser only. Connect Supabase to share with the team, or export a backup.'); }
+    else if (cfg.url && cfg.key && !(DEV && devLocal())) { state.store = supabaseStore(cfg.url, cfg.key); state.canWrite = true; await state.store.hydrate(); if (state.store.needsPassword) { location.hash = 'settings'; } }
+    else if (DEV) { state.store = localStore(); state.canWrite = true; setStoreStatus('Development mode (localhost): notes are saved in this browser only.'); }
+    else { state.store = localStore(); state.canWrite = false; setStoreStatus('Not connected to the team database. Enter the project URL and anon key to connect.'); }
     state.store.subscribe('contacts', rows => { state.contacts = rows; state.loaded.contacts = true; renderAll(); scheduleMentionSync(); });
-    state.store.subscribe('people', rows => { state.extra = {}; for (const [k, v] of Object.entries(rows)) if (v && v.name) state.extra[k] = Object.assign({ user_added: true, committees: [], roles: [], priority: 3 }, v, { id: k }); rebuildGraph(); renderAll(); });
+    state.store.subscribe('people', rows => { state.extraRaw = rows; rebuildExtra(); rebuildGraph(); renderAll(); });
     state.store.subscribe('links', rows => { state.links = rows; rebuildGraph(); renderAll(); });
     state.store.subscribe('lists', rows => { state.lists = rows; renderAll(); });
     state.store.subscribe('tasks', rows => { state.tasks = rows; state.loaded.tasks = true; notifyNewTasks(); renderAll(); scheduleMentionSync(); });
     state.store.subscribe('team', rows => { state.team = rows; renderAll(); scheduleMentionSync(); });
-    state.store.subscribe('briefs', rows => { state.briefReqs = rows; renderAll(); });
+    state.store.subscribe('research', rows => { state.researchReqs = rows; renderAll(); });
     registerMe();
     renderSettings(); updateGate();
   }
@@ -571,8 +557,17 @@ svg.net .node.inside .shape { transition: transform .2s cubic-bezier(.2,.8,.2,1)
   function meEmail() { const st = state.store; if (st && st.kind === 'supabase' && st.user) return (st.user.email || '').toLowerCase(); return ''; }
   function meHandle() { const e = meEmail(); return e ? e.split('@')[0] : 'me'; }
   async function registerMe() { const e = meEmail(); if (!e) return; const id = slug(e); const cur = state.team[id] || {}; if (cur.email === e && cur.last_seen && cur.last_seen.slice(0, 10) === todayISO()) return; const doc = Object.assign({ id, email: e, handle: e.split('@')[0], name: cur.name || e.split('@')[0] }, cur, { email: e, handle: e.split('@')[0], last_seen: new Date().toISOString() }); const ok = await dbSet('team', id, doc); if (ok) state.team[id] = doc; }
-  function teamList() { return Object.values(state.team || {}).sort((a, b) => (a.handle || '').localeCompare(b.handle || '')); }
-  function updateGate() { const st = state.store; const need = st && st.kind === 'supabase' && !st.user && !st.needsPassword; $('#gate').hidden = !need; if (need) { $('#g-msg').textContent = ''; setTimeout(() => $('#g-email').focus(), 50); } }
+  function teamList() { const list = Object.values(state.team || {}); const me = meEmail(); if (me && !list.some(t => (t.email || '').toLowerCase() === me)) list.push({ id: slug(me), email: me, handle: me.split('@')[0], name: me.split('@')[0] }); return list.sort((a, b) => (a.handle || '').localeCompare(b.handle || '')); }
+  // Everything stays behind sign-in: the only ways in are a Supabase session (team database) or the claude.ai viewer, which has its own sharing.
+  function updateGate() {
+    const st = state.store; const isSb = st && st.kind === 'supabase'; const signedIn = isSb && !!st.user; const inViewer = st && st.kind === 'claude';
+    const need = !(signedIn || inViewer || (DEV && st && st.kind === 'local')) && !(isSb && st.needsPassword);
+    const gate = $('#gate'); gate.hidden = !need; const ws = $('.ws'); if (ws) { ws.inert = need; ws.setAttribute('aria-hidden', need ? 'true' : 'false'); }
+    if (!need) return;
+    const connect = !isSb; $('#g-signin').hidden = connect; $('#g-connect').hidden = !connect; $('#g-msg').textContent = '';
+    setTimeout(() => { const f = connect ? $('#gc-url') : $('#g-email'); if (f) f.focus(); }, 50);
+  }
+  $('#gc-save').addEventListener('click', () => { const url = $('#gc-url').value.trim().replace(/\/+$/, '').replace(/\/(rest|auth|storage)\/v1$/, ''), key = $('#gc-key').value.trim(); if (!/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(url)) { $('#g-msg').textContent = 'The project URL looks like https://xxxx.supabase.co'; return; } if (/^sb_secret_|service_role/.test(key)) { $('#g-msg').textContent = 'That is the secret key. Use the publishable (anon) key.'; return; } if (!key) { $('#g-msg').textContent = 'Paste the anon key.'; return; } try { localStorage.setItem('snm-sb-url', url); localStorage.setItem('snm-sb-key', key); } catch (e) { $('#g-msg').textContent = 'This browser blocks saved settings.'; return; } $('#g-msg').textContent = 'Connecting…'; setTimeout(() => location.reload(), 300); });
   $('#g-login').addEventListener('click', async () => { const st = state.store; if (!st || !st.login) return; const btn = $('#g-login'); btn.disabled = true; $('#g-msg').textContent = 'Signing in…'; try { await st.login($('#g-email').value.trim(), $('#g-pass').value); $('#g-pass').value = ''; $('#g-msg').textContent = ''; updateGate(); renderSettings(); registerMe(); toast('Signed in'); } catch (e) { $('#g-msg').textContent = e.message || 'Sign-in failed'; } btn.disabled = false; });
   $('#g-pass').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('#g-login').click(); });
   $('#g-forgot').addEventListener('click', async () => { const st = state.store; if (!st || !st.recover) return; const email = $('#g-email').value.trim(); if (!email) { $('#g-msg').textContent = 'Enter your email first.'; return; } try { await st.recover(email); $('#g-msg').textContent = 'If that account exists, a reset link is on its way.'; } catch (e) { $('#g-msg').textContent = e.message; } });
@@ -641,7 +636,7 @@ svg.net .node.inside .shape { transition: transform .2s cubic-bezier(.2,.8,.2,1)
   function sortList(list) { const { k, dir } = state.sort; const m = dir === 'asc' ? 1 : -1; const val = (p) => { switch (k) { case 'name': return p.name; case 'title': return roleLine(p); case 'committees': return topCommittees(p).join(','); case 'priority': return p.priority; case 'status': return ['overdue', 'due', 'new', 'met', 'skip'].indexOf(contactState(p).key); case 'days': return contactState(p).days ?? 9999; case 'stance': return STANCES.findIndex(x => x[0] === stanceOf(p)); case 'last': return lastContact(p) || ''; default: return meetScore(p); } }; return list.sort((a, b) => { const va = val(a), vb = val(b); if (va < vb) return -1 * m; if (va > vb) return 1 * m; return a.name.localeCompare(b.name); }); }
 
   // ---------- router ----------
-  const PAGES = ['today', 'people', 'graph', 'meetings', 'briefs', 'tasks', 'bills', 'news', 'settings'];
+  const PAGES = ['today', 'people', 'graph', 'meetings', 'tasks', 'bills', 'news', 'settings'];
   function route() {
     const h = (location.hash || '#today').slice(1); let page = h, person = null;
     if (h.startsWith('p-')) { page = 'person'; person = h.slice(2); } else if (h.startsWith('c-')) { page = 'committee'; state.committeeView = h.slice(2); } else if (!PAGES.includes(h)) page = 'today';
@@ -660,7 +655,7 @@ svg.net .node.inside .shape { transition: transform .2s cubic-bezier(.2,.8,.2,1)
   function closeFocus() { state.selected = null; $('#main').classList.remove('split'); releaseFocus(); updateMapHighlight(); renderCrumb(); }
   function renderCrumb() {
     const c = $('#crumb'); c.textContent = ''; const p = state.selected ? byId(state.selected) : null;
-    const names = { today: 'Today', people: 'People', graph: 'Graph', meetings: 'Meetings', briefs: 'Briefs', tasks: 'Tasks', bills: 'Bills', news: 'News', settings: 'Settings', person: 'People' };
+    const names = { today: 'Today', people: 'People', graph: 'Graph', meetings: 'Meetings', tasks: 'Tasks', bills: 'Bills', news: 'News', settings: 'Settings', person: 'People' };
     if (state.page === 'person' && p) { c.append(el('a', { href: '#people', text: 'People' }), el('span', { text: '/' }), el('b', { text: p.name })); }
     else if (state.page === 'committee') { const cc = cByCode(state.committeeView); c.append(el('a', { href: '#people', text: 'Committees' }), el('span', { text: '/' }), el('b', { text: cc ? cc.name : '' })); }
     else if (state.page === 'graph' && state.selected && /^(hub|sub)-/.test(state.selected)) { const code = state.selected.replace(/^(hub|sub)-/, ''); const sb = subByCode(code); c.append(el('a', { href: '#graph', text: 'Graph', onclick: (e) => { e.preventDefault(); closeFocus(); } }), el('span', { text: '/' }), el('b', { text: sb ? sb.c.name + ' / ' + sb.sc.name : (cByCode(code) || {}).name || '' })); }
@@ -733,6 +728,8 @@ svg.net .node.inside .shape { transition: transform .2s cubic-bezier(.2,.8,.2,1)
   // ---------- person note ----------
   function neighborsOf(p) {
     const out = [];
+    for (const id of (p.works_with || [])) if (byId(id)) out.push({ p: byId(id), kind: 'ref', label: 'Works with' });
+    for (const x of allPeople()) if ((x.works_with || []).includes(p.id)) out.push({ p: x, kind: 'ref', label: 'Works with' });
     for (const l of Object.values(state.links)) { const rel = l.kind === 'related'; if (l.from === p.id && byId(l.to)) out.push({ p: byId(l.to), kind: 'ref', label: rel ? 'Works with' : 'Suggested' }); if (l.to === p.id && byId(l.from)) out.push({ p: byId(l.from), kind: 'ref', label: rel ? 'Works with' : 'Referred by' }); }
     for (const x of allPeople()) { if (x.id === p.id) continue; if (x.office_id === p.id) out.push({ p: x, kind: 'office', label: 'Their office' }); else if (p.office_id && x.id === p.office_id) out.push({ p: x, kind: 'office', label: 'Works for' }); else if (p.kind === 'senator' && x.kind === 'senator' && x.state === p.state) out.push({ p: x, kind: 'state', label: 'Same state' }); }
     return out;
@@ -793,7 +790,7 @@ svg.net .node.inside .shape { transition: transform .2s cubic-bezier(.2,.8,.2,1)
     const openTasks = Object.values(state.tasks).filter(t => t.person_id === p.id && !t.done).sort((a, b) => (a.due || '9999').localeCompare(b.due || '9999'));
     if (openTasks.length) { const w = el('div', { style: 'display:grid;gap:2px' }); for (const t of openTasks) w.append(taskRow(t, true)); card.append(w); }
     host.append(card);
-    host.append(briefSection(p, compact));
+    if (p.user_added) host.append(detailsLine(p));
 
     // ---- tasks and suggested contacts (only when there is something, plus a quick add)
     const ms = (c.mentioned || []);
@@ -827,27 +824,44 @@ svg.net .node.inside .shape { transition: transform .2s cubic-bezier(.2,.8,.2,1)
   }
   // what is typed in a person's log form, so a re-render (someone else's save, a stance click) never wipes it
   function captureForm(host) { const g = (id) => { const e = host.querySelector('#' + id); return e ? e.value : ''; }; return { note: g('m-note'), who: g('m-who'), date: g('m-date'), time: g('m-time'), type: g('m-type'), sent: g('m-sent'), issues: g('m-issues') }; }
-  // ---------- research briefs ----------
-  function briefState(p) { const b = (state.briefs || {})[p.id]; const r = (state.briefReqs || {})[p.id]; const fresh = b && (!r || !r.requested || (b.generated || '') >= r.requested); if (b && fresh) return { key: b.status === 'failed' ? 'failed' : 'ready', b, r }; if (r && r.status === 'requested') return { key: 'requested', b: b && b.status !== 'failed' ? b : null, r }; if (b) return { key: b.status === 'failed' ? 'failed' : 'ready', b, r }; return { key: 'none', b: null, r: null }; }
-  function briefOrg(p) { if (p.kind === 'senator') return 'U.S. Senate (' + p.party + '-' + p.state + ')'; const o = officeOf(p); if (o) return 'Office of Sen. ' + o.name + ' (' + o.party + '-' + o.state + ')'; if (p.org) return p.org; return (p.committees || []).filter(c => !c.includes(':')).map(cname).join('; '); }
-  async function requestBrief(p, context) { const doc = { id: p.id, person_id: p.id, name: p.name, title: p.title || '', org: briefOrg(p), state: stateOf(p) || '', kind: p.kind, context: String(context || '').trim().slice(0, 1200), status: 'requested', requested: new Date().toISOString(), requested_by: meEmail() }; const ok = await dbSet('briefs', p.id, doc); if (ok) { state.briefReqs[p.id] = doc; renderAll(); } return ok; }
-  async function cancelBrief(p) { if (await dbDelete('briefs', p.id)) { delete state.briefReqs[p.id]; renderAll(); } }
-  function briefSection(p, compact) {
-    const st = briefState(p); const b = st.b; const wrap = el('div', { class: 'briefsec' });
-    const head = el('h3', null, 'Brief'); if (b) head.append(el('span', { class: 'small muted', style: 'font-weight:400', text: 'researched ' + (b.generated || '').slice(0, 10) }), b.confidence ? el('span', { class: 'conf', text: b.confidence + ' confidence' }) : null); wrap.append(head);
-    if (b && st.key !== 'failed') {
-      if (b.summary) wrap.append(el('p', { class: 'bsum', text: String(b.summary) }));
-      const sec = (label, items) => { if (!Array.isArray(items) || !items.length) return; const d = el('div', { class: 'bsec' }, el('h4', { text: label })); const ul = el('ul'); for (const it of items.slice(0, 12)) ul.append(el('li', { text: String(it) })); d.append(ul); wrap.append(d); };
-      sec('Background', b.background); sec('Role and portfolio', b.role); sec('Nuclear and enrichment', b.nuclear); sec('How to approach', b.approach); sec('Recent', b.recent);
-      const srcs = (b.sources || []).filter(x => x && safeUrl(x.url)); if (srcs.length) { const d = el('details', { class: 'fold' }, el('summary', { text: 'Sources (' + srcs.length + ')' })); const ul = el('ul', { class: 'small', style: 'padding-top:6px' }); for (const x of srcs) ul.append(el('li', null, el('a', { href: x.url, target: '_blank', rel: 'noopener', class: 'muted', text: String(x.title || x.url.replace(/^https:\/\/(www\.)?/, '').slice(0, 90)) }))); d.append(ul); wrap.append(d); }
+  // ---------- automatic details for people added by hand ----------
+  // The page cannot search the web, so a research run (the "person details" scheduled task, or Claude on request) looks each new person up
+  // and publishes details.json; those details fill in whatever the person's record still has at its default.
+  const DEFAULT_TITLES = ['', 'Staff', 'Contact', 'Committee staff'];
+  function rebuildExtra() {
+    state.extra = {};
+    for (const [k, v] of Object.entries(state.extraRaw || {})) {
+      if (!v || !v.name) continue; const p = Object.assign({ user_added: true, committees: [], roles: [], priority: 3 }, v, { id: k }); const d = (state.details || {})[k];
+      if (d && d.status === 'ready') {
+        if (DEFAULT_TITLES.includes(p.title || '') && d.title) p.title = String(d.title);
+        if (!p.org && d.org && !p.office_id) p.org = String(d.org);
+        if ((!p.why || /^Added (from|for) /.test(p.why)) && d.why) p.why = String(d.why);
+        if (!p.record && d.record) p.record = String(d.record);
+        if (!p.state && d.state && STATE_NAMES[d.state]) p.state = d.state;
+        if (!p.office_id && d.office_id && state.base.some(x => x.id === d.office_id && x.kind === 'senator')) { p.office_id = d.office_id; const o = state.base.find(x => x.id === d.office_id); if (o) { p.state = p.state || o.state; p.party = p.party || o.party; } }
+        if (Array.isArray(d.committees)) { const known = d.committees.filter(c => typeof c === 'string' && (cByCode(c) || subByCode(c))); for (const c of known) { if (!p.committees.includes(c)) p.committees.push(c); const sb = subByCode(c); if (sb && !p.committees.includes(sb.c.code)) p.committees.push(sb.c.code); } if (known.length && p.kind === 'office-staff' && !p.office_id && !v.office_id) p.kind = 'committee-staff'; }
+        p.works_with = Array.isArray(d.works_with) ? d.works_with.filter(id => typeof id === 'string' && id !== k && (state.base.some(x => x.id === id) || (state.extraRaw || {})[id])) : [];
+        if (!(p.sources || []).length && Array.isArray(d.sources)) p.sources = d.sources.map(x => typeof x === 'string' ? x : (x && x.url)).filter(safeUrl);
+        p.confidence = d.confidence || p.confidence; p.researched = d.generated || ''; p.research_note = d.note ? String(d.note) : '';
+      }
+      state.extra[k] = p;
     }
-    const act = el('div', { class: 'inline', style: 'align-items:center;margin-top:6px' });
-    if (st.key === 'requested') act.append(el('span', { class: 'small muted', style: 'flex:1', text: (b ? 'Refresh requested ' : 'Brief requested ') + (st.r.requested || '').slice(0, 10) + ' · written on the next research run' }), el('button', { type: 'button', class: 'btn ghost small', text: 'Cancel request', onclick: () => cancelBrief(p) }));
-    else { if (st.key === 'failed') act.append(el('span', { class: 'small muted', style: 'flex:1', text: 'Last run found too little to brief' + (b && b.note ? ': ' + String(b.note) : '') })); else if (!b) act.append(el('span', { class: 'small muted', style: 'flex:1', text: 'No brief yet.' })); act.append(el('button', { type: 'button', class: 'btn ghost small', text: b ? 'Refresh brief' : 'Request a brief', onclick: () => { const box = el('div', { style: 'display:grid;gap:6px;width:100%' }); const ctx = el('textarea', { placeholder: 'What is the meeting about, what you already know (optional)' }); box.append(el('label', { class: 'f' }, 'Context for the researcher', ctx), el('div', { class: 'inline' }, el('button', { type: 'button', class: 'btn small', text: 'Request', onclick: () => requestBrief(p, ctx.value).then(ok => ok && toast('Brief requested for ' + p.name)) }), el('button', { type: 'button', class: 'btn ghost small', text: 'Cancel', onclick: () => { box.replaceWith(act); } }))); act.replaceWith(box); ctx.focus(); } })); }
-    wrap.append(act); return wrap;
   }
-  async function loadBriefs() { try { const r = await fetch('briefs.json', { cache: 'no-store' }); if (r.ok) { const j = await r.json(); const out = {}; for (const [k, v] of Object.entries(j.briefs || {})) if (v && typeof v === 'object') out[k] = v; state.briefs = out; state.briefsAsOf = j.generated || ''; } } catch (e) {} renderAll(); }
-  // ---------- adding someone new from a meeting or a brief request ----------
+  function detailsState(p) { const d = (state.details || {})[p.id]; const r = (state.researchReqs || {})[p.id]; const fresh = d && (!r || !r.requested || (d.generated || '') >= r.requested); if (d && fresh) return { key: d.status === 'failed' ? 'failed' : 'ready', d, r }; if (r && r.status === 'requested') return { key: 'requested', d, r }; if (d) return { key: d.status === 'failed' ? 'failed' : 'ready', d, r }; return { key: 'none', d: null, r: null }; }
+  function researchOrg(p) { const o = officeOf(p); if (o) return 'Office of Sen. ' + o.name + ' (' + o.party + '-' + o.state + ')'; if (p.org) return p.org; return (p.committees || []).filter(c => !c.includes(':')).map(cname).join('; '); }
+  async function requestDetails(p, context) { const doc = { id: p.id, person_id: p.id, name: p.name, title: p.title || '', org: researchOrg(p), state: stateOf(p) || '', kind: p.kind, context: String(context || '').trim().slice(0, 1200), status: 'requested', requested: new Date().toISOString(), requested_by: meEmail() }; const ok = await dbSet('research', p.id, doc); if (ok) { state.researchReqs[p.id] = doc; renderAll(); } return ok; }
+  async function cancelDetails(p) { if (await dbDelete('research', p.id)) { delete state.researchReqs[p.id]; renderAll(); } }
+  function detailsLine(p) {
+    const st = detailsState(p); const line = el('div', { class: 'callout', style: 'display:flex;gap:10px;align-items:center;flex-wrap:wrap' });
+    const ask = (label) => el('button', { type: 'button', class: 'btn ghost small', text: label, onclick: () => requestDetails(p, '').then(ok => ok && toast('Looking up ' + p.name + ' on the next research run')) });
+    if (st.key === 'requested') line.append(el('span', { style: 'flex:1', text: 'Looking them up — title, role and background fill in after the next research run (requested ' + (st.r.requested || '').slice(0, 10) + ').' }), el('button', { type: 'button', class: 'btn ghost small', text: 'Cancel', onclick: () => cancelDetails(p) }));
+    else if (st.key === 'ready') line.append(el('span', { style: 'flex:1', text: 'Details filled in by research on ' + (st.d.generated || '').slice(0, 10) + (st.d.confidence ? ' · ' + st.d.confidence + ' confidence' : '') + (p.research_note ? ' · ' + p.research_note : '') }), ask('Re-check'));
+    else if (st.key === 'failed') line.append(el('span', { style: 'flex:1', text: 'Research found too little public information to fill in' + (st.d.note ? ': ' + String(st.d.note) : '.') }), ask('Try again'));
+    else line.append(el('span', { style: 'flex:1', text: 'Only what was typed is on file — the next research run looks them up automatically.' }), ask('Look up now'));
+    return line;
+  }
+  async function loadDetails() { try { const r = await fetch('details.json', { cache: 'no-store' }); if (r.ok) { const j = await r.json(); const out = {}; for (const [k, v] of Object.entries(j.people || {})) if (v && typeof v === 'object') out[k] = v; state.details = out; state.detailsAsOf = j.generated || ''; } } catch (e) {} rebuildExtra(); rebuildGraph(); renderAll(); }
+  // ---------- adding someone new from a meeting ----------
   function newPersonFields(name) {
     const f = {};
     f.title = el('input', { type: 'text', placeholder: 'e.g. Legislative Director, Energy LA, Staff Director' });
@@ -858,10 +872,9 @@ svg.net .node.inside .shape { transition: transform .2s cubic-bezier(.2,.8,.2,1)
     f.orgText = el('input', { type: 'text', placeholder: 'Organization (e.g. DOE, NEI, Centrus)', hidden: true });
     f.rel = el('input', { type: 'text', list: 'people-list', placeholder: 'Someone on the map they work with (optional)', autocomplete: 'off' });
     f.pri = el('select'); for (let i = 5; i >= 1; i--) { const o = el('option', { value: i, text: 'Priority ' + i }); if (i === 3) o.selected = true; f.pri.append(o); }
-    f.brief = el('input', { type: 'checkbox' }); f.brief.checked = true;
     f.kind.addEventListener('change', () => { const other = f.kind.value === 'other'; f.orgText.hidden = !other; f.org.hidden = other; });
     f.hdr = el('div', { class: 'hdr' });
-    f.box = el('div', { class: 'newp' }, f.hdr, el('div', { class: 'inline' }, el('label', { class: 'f' }, 'Title', f.title), el('label', { class: 'f', style: 'flex:0 0 220px' }, 'Kind', f.kind)), el('div', { class: 'inline' }, el('label', { class: 'f' }, 'Works for / sits on', f.org, f.orgText), el('label', { class: 'f' }, 'Also connected to', f.rel), el('label', { class: 'f', style: 'flex:0 0 120px' }, 'Priority', f.pri)), el('label', { class: 'small', style: 'display:flex;gap:6px;align-items:center;cursor:pointer' }, f.brief, 'Request a research brief on them'));
+    f.box = el('div', { class: 'newp' }, f.hdr, el('div', { class: 'inline' }, el('label', { class: 'f' }, 'Title', f.title), el('label', { class: 'f', style: 'flex:0 0 220px' }, 'Kind', f.kind)), el('div', { class: 'inline' }, el('label', { class: 'f' }, 'Works for / sits on', f.org, f.orgText), el('label', { class: 'f' }, 'Also connected to', f.rel), el('label', { class: 'f', style: 'flex:0 0 120px' }, 'Priority', f.pri)), el('div', { class: 'small muted', text: 'They will be looked up automatically: title, office, committees, background and sources fill in on the next research run (about every two hours).' }));
     f.setName = (n) => { f.hdr.textContent = (n || 'This person') + ' is not on the map yet — add them and say who they are tied to'; };
     f.setName(name); return f;
   }
@@ -870,7 +883,7 @@ svg.net .node.inside .shape { transition: transform .2s cubic-bezier(.2,.8,.2,1)
     let f = null, timer = null;
     const sync = () => { const v = input.value.trim(); const known = findPersonByName(v); if (v.length >= 3 && !known) { if (!f) { f = newPersonFields(v); host.append(f.box); } else f.setName(v); host.hidden = false; } else host.hidden = true; };
     input.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(sync, 350); }); input.addEventListener('change', sync); input.addEventListener('blur', sync);
-    return { fields: () => (host.hidden ? null : f), sync, reset: () => { host.hidden = true; if (f) { f.title.value = ''; f.rel.value = ''; f.orgText.value = ''; f.org.value = ''; f.kind.value = 'office-staff'; f.orgText.hidden = true; f.org.hidden = false; f.pri.value = '3'; f.brief.checked = true; } } };
+    return { fields: () => (host.hidden ? null : f), sync, reset: () => { host.hidden = true; if (f) { f.title.value = ''; f.rel.value = ''; f.orgText.value = ''; f.org.value = ''; f.kind.value = 'office-staff'; f.orgText.hidden = true; f.org.hidden = false; f.pri.value = '3'; } } };
   }
   async function createPerson(name, f, why) {
     const id = 'add-' + slug(name) + '-' + Date.now().toString(36); const kind = f.kind.value; const org = f.org.value; let office = null; const committees = []; let orgName = '';
@@ -909,7 +922,7 @@ svg.net .node.inside .shape { transition: transform .2s cubic-bezier(.2,.8,.2,1)
     const memberList = (ids, chair, ranking, exo) => { const wrap = el('div', { class: 'members' }); const sorted = ids.slice().sort((a, b) => (a === chair ? 0 : a === ranking ? 1 : 2) - (b === chair ? 0 : b === ranking ? 1 : 2) || ((byId(a) || {}).party || '').localeCompare((byId(b) || {}).party || '') || lastName(a).localeCompare(lastName(b))); for (const id of sorted) { const p = byId(id); if (!p) continue; wrap.append(el('button', { type: 'button', class: 'mem', onclick: () => openPerson(id) }, dotEl(p), el('span', { text: p.name + ' (' + p.party + '-' + p.state + ')' }), el('span', { class: 'r', text: id === chair ? 'Chair' : id === ranking ? (c.vice_chair === id && !focusSub ? 'Vice chair' : 'Ranking') : (exo && exo.includes(id) ? 'ex officio' : (p.priority >= 4 ? 'P' + p.priority : '')) }))); } return wrap; };
     const sec = el('section', null, el('h3', { text: 'Members (' + (focusSub ? focusSub.members.length : c.members.length) + ')' })); sec.append(memberList(focusSub ? focusSub.members : c.members, lead.chair, focusSub ? lead.ranking : (c.vice_chair || c.ranking), focusSub ? focusSub.ex_officio : null)); host.append(sec);
     const staff = allPeople().filter(x => x.kind === 'committee-staff' && (x.committees || []).includes(focusSub ? focusSub.code : c.code)); if (staff.length) { const st = el('section', { class: 'links' }, el('h3', { text: 'Committee staff' })); for (const x of staff) st.append(el('button', { type: 'button', class: 'wl', onclick: () => openPerson(x.id) }, dotEl(x), x.name + ' · ' + x.title)); host.append(st); }
-    if (!focusSub && c.subcommittees.length) { const ss = el('section', null, el('h3', { text: 'Subcommittees (' + c.subcommittees.length + ')' }), el('div', { class: 'small muted', text: 'Letters match the dots inside the committee circle on the graph.' })); const ul = el('ul', { class: 'sublist', style: 'list-style:none;padding-left:0' }); c.subcommittees.forEach((sc, i) => ul.append(el('li', null, el('span', { class: 'ltr', text: subLetter(i) }), el('a', { href: '#graph', text: sc.name, onclick: (e) => { e.preventDefault(); if (compact) focusHub('sub-' + sc.code); else showOnGraph('sub-' + sc.code); } }), el('span', { class: 'muted small', text: ' · Chair ' + (lastName(sc.chair) || '—') + ' · Ranking ' + (lastName(sc.ranking) || '—') + ' · ' + sc.members.length + ' members' + (sc.nuclear_tier >= 3 ? ' · nuclear' : '') })))); ss.append(ul); host.append(ss); }
+    if (!focusSub && c.subcommittees.length) { const ss = el('section', null, el('h3', { text: 'Subcommittees (' + c.subcommittees.length + ')' }), el('div', { class: 'small muted', text: 'Numerals match the dots inside the committee circle on the graph.' })); const ul = el('ul', { class: 'sublist', style: 'list-style:none;padding-left:0' }); c.subcommittees.forEach((sc, i) => ul.append(el('li', null, el('span', { class: 'ltr', text: subLetter(i) }), el('a', { href: '#graph', text: sc.name, onclick: (e) => { e.preventDefault(); if (compact) focusHub('sub-' + sc.code); else showOnGraph('sub-' + sc.code); } }), el('span', { class: 'muted small', text: ' · Chair ' + (lastName(sc.chair) || '—') + ' · Ranking ' + (lastName(sc.ranking) || '—') + ' · ' + sc.members.length + ' members' + (sc.nuclear_tier >= 3 ? ' · nuclear' : '') })))); ss.append(ul); host.append(ss); }
     if (focusSub) { const back = el('section', null, el('h3', { text: 'Parent committee' })); back.append(el('button', { type: 'button', class: 'wl', text: c.name, onclick: () => { if (compact) focusHub('hub-' + c.code); else go('c-' + c.code); } })); const others = c.subcommittees.filter(x => x.code !== focusSub.code); if (others.length) { const ul = el('ul', { class: 'sublist', style: 'list-style:none;padding-left:0;margin-top:8px' }); c.subcommittees.forEach((sc, i) => { if (sc.code === focusSub.code) return; ul.append(el('li', null, el('span', { class: 'ltr', text: subLetter(i) }), el('button', { type: 'button', class: 'small', style: 'text-decoration:underline', text: sc.name, onclick: () => { if (compact) focusHub('sub-' + sc.code); else showOnGraph('sub-' + sc.code); } }))); }); back.append(el('div', { class: 'small muted', style: 'margin-top:8px', text: 'Other subcommittees' }), ul); } host.append(back); }
     if (c.source && safeUrl(c.source)) host.append(el('div', { class: 'small muted' }, 'Source: ', el('a', { href: c.source, target: '_blank', rel: 'noopener', text: 'senate.gov committee membership' })));
   }
@@ -1015,37 +1028,10 @@ svg.net .node.inside .shape { transition: transform .2s cubic-bezier(.2,.8,.2,1)
     if (!p) { nmNew.sync(); f = nmNew.fields(); if (!f) { toast('Say who ' + nameV + ' is first'); return; } const btn = $('#nm-save'); btn.disabled = true; p = await createPerson(nameV, f, 'Added from a ' + type.toLowerCase() + ' on ' + date + '.'); btn.disabled = false; if (!p) return; created = true; }
     const extra = { type, sentiment: $('#nm-sent').value, issues: $('#nm-issues').value.split(/[,;]+/).map(s => s.trim()).filter(Boolean), time: $('#nm-time').value || nowHM() };
     const ok = await logMeeting(p, date, note, names, extra); if (!ok) return;
-    if (created && f.brief.checked) await requestBrief(p, note);
+    if (created) await requestDetails(p, note);
     $('#nm-note').value = ''; $('#nm-who').value = ''; $('#nm-person').value = ''; $('#nm-issues').value = ''; $('#nm-time').value = nowHM(); nmNew.reset();
-    if (created) { toast('Added ' + p.name + ' to the map and logged the ' + type.toLowerCase() + (f.brief.checked ? ' · brief requested' : '')); openPerson(p.id); } else toast('Logged for ' + p.name);
+    if (created) { toast('Added ' + p.name + ' to the map and logged the ' + type.toLowerCase() +  + ' · details will fill in'); openPerson(p.id); } else toast('Logged for ' + p.name);
   });
-  // ---------- briefs page ----------
-  const bfNew = watchNewPerson($('#bf-name'), $('#bf-newp')); attachPeoplePicker($('#bf-name'), (p) => { bfNew.sync(); if (!p) { const f = bfNew.fields(); if (f) f.title.focus(); } else $('#bf-ctx').focus(); });
-  $('#bf-save').addEventListener('click', async () => {
-    const nameV = $('#bf-name').value.trim(); if (!nameV) { toast('Who do you want a brief on?'); $('#bf-name').focus(); return; } let p = findPersonByName(nameV); const ctx = $('#bf-ctx').value;
-    if (!p) { bfNew.sync(); const f = bfNew.fields(); if (!f) { toast('Say who ' + nameV + ' is first'); return; } p = await createPerson(nameV, f, 'Added for a brief on ' + todayISO() + '.'); if (!p) return; }
-    const ok = await requestBrief(p, ctx); if (ok) { toast('Brief requested for ' + p.name); $('#bf-name').value = ''; $('#bf-ctx').value = ''; bfNew.reset(); }
-  });
-  function renderBriefs() {
-    const host = $('#bf-lists'); if (!host) return; host.textContent = '';
-    const reqs = Object.values(state.briefReqs || {}).filter(r => r && r.status === 'requested' && (!state.briefs[r.id] || (state.briefs[r.id].generated || '') < (r.requested || ''))).sort((a, b) => (b.requested || '').localeCompare(a.requested || ''));
-    const ready = Object.values(state.briefs || {}).filter(b => b && b.status !== 'failed').sort((a, b) => (b.generated || '').localeCompare(a.generated || ''));
-    const failed = Object.values(state.briefs || {}).filter(b => b && b.status === 'failed');
-    $('#n-briefs').textContent = reqs.length ? String(reqs.length) : ''; $('#bf-sub').textContent = (ready.length ? ready.length + ' briefs ready' : 'No briefs yet') + (state.briefsAsOf ? ' · last research run ' + state.briefsAsOf.replace('T', ' ').slice(0, 16) + ' UTC' : '') + ' · requests are researched by the brief task about every two hours';
-    const row = (nm, sub, ctx, acts) => el('div', { class: 'briefrow' }, el('div', null, el('div', { class: 'nm', text: nm }), sub ? el('div', { class: 'small muted', text: sub }) : null, ctx ? el('div', { class: 'ctx', text: ctx }) : null), el('div', { class: 'act' }, ...acts));
-    const openBtn = (id) => byId(id) ? el('button', { type: 'button', class: 'btn ghost small', text: 'Open', onclick: () => openPerson(id) }) : el('span', { class: 'small muted', text: 'not on the map' });
-    const s1 = el('section', null, el('h3', { style: 'font-size:14px;margin:14px 0 4px', text: 'Waiting for research (' + reqs.length + ')' })); if (!reqs.length) s1.append(el('div', { class: 'small muted', text: 'Nothing pending. Use the form above, or the Brief box on any person page.' }));
-    for (const r of reqs) { const p = byId(r.id); s1.append(row(r.name || (p ? p.name : r.id), (r.title ? r.title + ' · ' : '') + (r.org || '') + ' · requested ' + (r.requested || '').slice(0, 10) + (r.requested_by ? ' by ' + r.requested_by.split('@')[0] : ''), r.context, [openBtn(r.id), el('button', { type: 'button', class: 'btn ghost small', text: 'Cancel', onclick: async () => { if (await dbDelete('briefs', r.id)) { delete state.briefReqs[r.id]; renderAll(); } } })])); }
-    host.append(s1);
-    const s2 = el('section', null, el('h3', { style: 'font-size:14px;margin:18px 0 4px', text: 'Ready (' + ready.length + ')' })); if (!ready.length) s2.append(el('div', { class: 'small muted', text: 'Briefs appear here once the research task has run.' }));
-    for (const b of ready) { const p = byId(b.person_id || ''); s2.append(row(b.name || (p ? p.name : ''), 'researched ' + (b.generated || '').slice(0, 10) + (b.confidence ? ' · ' + b.confidence + ' confidence' : '') + (p ? ' · ' + roleLine(p) : ''), String(b.summary || '').slice(0, 240), [openBtn(b.person_id)])); }
-    host.append(s2);
-    if (failed.length) { const s3 = el('section', null, el('h3', { style: 'font-size:14px;margin:18px 0 4px', text: 'Could not brief (' + failed.length + ')' })); for (const b of failed) s3.append(row(b.name || '', 'tried ' + (b.generated || '').slice(0, 10), String(b.note || ''), [openBtn(b.person_id)])); host.append(s3); }
-  }
-  for (const id of ['mf-type', 'mf-sent', 'mf-issue', 'mf-range']) $('#' + id).addEventListener('change', (e) => { state.mfilters[id.slice(3)] = e.target.value; renderMeetings(); });
-  $('#mq').addEventListener('input', (e) => { state.mq = e.target.value.trim(); renderMeetings(); });
-  $('#newmeet-btn').addEventListener('click', () => { go('meetings'); setTimeout(() => $('#nm-person').focus(), 50); });
-
   // ---------- tasks ----------
   function renderTasks() {
     const host = $('#tasks'); if (!host) return; host.textContent = ''; host.classList.add('tasks-page'); const me = meEmail(); const team = teamList(); const byDue = (a, b) => (a.due || '9999').localeCompare(b.due || '9999') || (a.created || '').localeCompare(b.created || '');
@@ -1073,7 +1059,7 @@ svg.net .node.inside .shape { transition: transform .2s cubic-bezier(.2,.8,.2,1)
     add('Roster as of', state.asOf || '—'); add('Senators', String(ps.filter(p => p.kind === 'senator').length)); add('Committees', String(state.clist.length) + ' (' + state.clist.reduce((n, c) => n + c.subcommittees.length, 0) + ' subcommittees)'); add('Committee staff', String(ps.filter(p => p.kind === 'committee-staff').length)); add('Office staff and referrals', String(ps.filter(p => p.kind === 'office-staff').length)); add('Meetings logged', String(ps.reduce((n, p) => n + (contact(p).meetings || []).length, 0)));
     add('Team', teamList().length ? teamList().map(t => t.handle + ' (' + t.email + ')').join(', ') : '— (people appear here after they sign in)'); add('Sources', 'senate.gov committee rosters; govinfo hearing prints; committee and member releases; NRC, DOE and Federal Register documents; ANS Nuclear Newswire; World Nuclear News.');
     $('#h-sample').textContent = SAMPLE.some(s => (state.contacts[s.id] || {}).sample) ? 'Remove demo notes' : 'Load demo notes';
-    const bs = $('#brief-settings'); if (bs) { bs.textContent = ''; $('#bf-asof').textContent = state.briefsAsOf ? 'briefs.json from ' + state.briefsAsOf.replace('T', ' ').slice(0, 16) + ' UTC' : 'no briefs.json yet'; bs.append(el('div', { class: 'small', text: 'Requests are saved in the briefs collection of this database. The scheduled task "General Matter — person briefs" researches each one with web search and publishes the results as briefs.json next to this page; the page re-reads that file every few minutes.' })); if (isSb && cfg.url && cfg.key) { const url = cfg.url.replace(/\/+$/, '') + '/rest/v1/docs?select=id,data&collection=eq.briefs&apikey=' + encodeURIComponent(cfg.key); bs.append(el('div', { class: 'small muted', text: 'For the task to see requests made here, give Claude this read-only URL (the anon key is public by design) and add the policy below in the Supabase SQL editor so the anon role can read brief requests and nothing else:' }), el('code', { style: 'display:block;white-space:pre-wrap;word-break:break-all;padding:6px 8px', text: url }), el('code', { style: 'display:block;white-space:pre-wrap;padding:6px 8px', text: "create policy \"anon reads brief requests\" on public.docs for select to anon using (collection = 'briefs');" })); } else if (isClaude) bs.append(el('div', { class: 'small muted', text: 'Requests made here are read straight from this artifact by the task.' })); else bs.append(el('div', { class: 'small muted', text: 'Notes are local to this browser, so requests made here are not visible to the task. Connect the team database, or ask Claude directly for a brief.' })); }
+    const bs = $('#research-settings'); if (bs) { bs.textContent = ''; $('#rs-asof').textContent = state.detailsAsOf ? 'details.json from ' + state.detailsAsOf.replace('T', ' ').slice(0, 16) + ' UTC' : 'no details.json yet'; bs.append(el('div', { class: 'small', text: 'Anyone added by hand is looked up automatically. The scheduled task "General Matter — person details" (or Claude, when you ask) researches each new person with web search — title, office or committee, state, background, sources, colleagues already on the map — and publishes details.json next to this page; the page re-reads it every few minutes and fills in whatever was left blank.' })); if (isSb && cfg.url && cfg.key) { const url = cfg.url.replace(/\/+$/, '') + '/rest/v1/docs?select=id,data&collection=eq.research&apikey=' + encodeURIComponent(cfg.key); bs.append(el('div', { class: 'small muted', text: 'For the task to see requests made here, give Claude this read-only URL (the anon key is public by design) and add the policy below in the Supabase SQL editor so the anon role can read look-up requests and hand-added people, and nothing else:' }), el('code', { style: 'display:block;white-space:pre-wrap;word-break:break-all;padding:6px 8px', text: url }), el('code', { style: 'display:block;white-space:pre-wrap;padding:6px 8px', text: "create policy \"anon reads research requests\" on public.docs for select to anon using (collection in ('research', 'people'));" })); } else if (isClaude) bs.append(el('div', { class: 'small muted', text: 'Requests made here are read straight from this artifact by the task.' })); else bs.append(el('div', { class: 'small muted', text: 'Connect the team database (sign-in screen) so look-up requests reach the task.' })); }
   }
   $('#sb-save').addEventListener('click', () => { const url = $('#sb-url').value.trim().replace(/\/+$/, '').replace(/\/(rest|auth|storage)\/v1$/, ''), key = $('#sb-key').value.trim(); if (/^sb_secret_|service_role/.test(key)) { toast('That is the secret key. Use the publishable or anon key.'); return; } try { if (url && key) { localStorage.setItem('snm-sb-url', url); localStorage.setItem('snm-sb-key', key); } else { localStorage.removeItem('snm-sb-url'); localStorage.removeItem('snm-sb-key'); } } catch (e) {} toast(url && key ? 'Saved. Reloading…' : 'Cleared. Reloading…'); setTimeout(() => location.reload(), 600); });
   $('#sb-login').addEventListener('click', async () => { const st = state.store; if (!st || st.kind !== 'supabase') return; const btn = $('#sb-login'); btn.disabled = true; try { await st.login($('#sb-email').value.trim(), $('#sb-pass').value); $('#sb-pass').value = ''; toast('Signed in'); renderSettings(); updateGate(); registerMe(); } catch (e) { toast(e.message || 'Sign-in failed'); } btn.disabled = false; });
@@ -1107,7 +1093,7 @@ svg.net .node.inside .shape { transition: transform .2s cubic-bezier(.2,.8,.2,1)
   let svg, g, sim, linkSel, nodeSel, labelSel, zoom, graph = { nodes: [], links: [] }, zoomK = 1, saved = null, prevT = null;
   const STATE_ANCHOR = {}; (function () { const codes = Object.keys(STATE_NAMES).sort(); const cols = 10; codes.forEach((c, i) => { STATE_ANCHOR[c] = { x: ((i % cols) - (cols - 1) / 2) * 150, y: (Math.floor(i / cols) - 2) * 150 }; }); })();
   const PRI_RADIUS = { 5: 90, 4: 230, 3: 370, 2: 510, 1: 640 };
-  const subLetter = (i) => i < 26 ? String.fromCharCode(65 + i) : String.fromCharCode(65 + Math.floor(i / 26) - 1) + String.fromCharCode(65 + (i % 26));
+  const subLetter = (i) => { let n = i + 1, out = ''; for (const [v, r] of [[50, 'L'], [40, 'XL'], [10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']]) while (n >= v) { out += r; n -= v; } return out; };
   // which committee is open (its subcommittees drawn inside the circle): the selected hub, or the parent of the selected subcommittee
   function expandedCode() { const sel = state.selected; if (!sel || state.layout !== 'committee') return ''; if (sel.startsWith('hub-')) return sel.slice(4); if (sel.startsWith('sub-')) { const sb = subByCode(sel.slice(4)); return sb ? sb.c.code : ''; } return ''; }
   function applyHubExpansion() {
@@ -1116,13 +1102,13 @@ svg.net .node.inside .shape { transition: transform .2s cubic-bezier(.2,.8,.2,1)
       if (!d.hub || d.sub) continue; const exp = d.c.code === code; const subs = graph.nodes.filter(x => x.sub && x.c.code === d.c.code);
       const R = exp ? Math.max(84, 36 + subs.length * 9) : d.r0; if (d.r !== R) changed = true; d.r = R; d.expanded = exp;
       const cx = d.fx != null ? d.fx : d.x, cy = d.fy != null ? d.fy : d.y;
-      subs.forEach((sx, i) => { if (exp) { const a = (i / subs.length) * Math.PI * 2 - Math.PI / 2; const rr = subs.length === 1 ? 0 : R * 0.64; sx.fx = cx + Math.cos(a) * rr; sx.fy = cy + Math.sin(a) * rr; sx.r = 10; sx.inside = true; } else if (sx.inside) { sx.inside = false; sx.fx = null; sx.fy = null; sx.r = sx.r0; } });
+      subs.forEach((sx, i) => { if (exp) { const a = (i / subs.length) * Math.PI * 2 - Math.PI / 2; const rr = subs.length === 1 ? 0 : R * 0.64; sx.fx = cx + Math.cos(a) * rr; sx.fy = cy + Math.sin(a) * rr; sx.r = sx.letter.length > 2 ? 13 : 11; sx.inside = true; } else if (sx.inside) { sx.inside = false; sx.fx = null; sx.fy = null; sx.r = sx.r0; } });
     }
     nodeSel.filter(d => d.hub && !d.sub).select('.hubnode').attr('r', d => d.r); nodeSel.filter(d => d.sub).select('.subnode').attr('r', d => d.r);
     nodeSel.classed('expanded', d => d.hub && !d.sub && !!d.expanded).classed('inside', d => !!d.inside);
     if (changed && sim) { sim.force('collide').radius(d => d.r + 11); sim.alpha(0.35).restart(); }
   }
-  function zoomToHub(d) { if (!svg) return; const w = svg.node().clientWidth, h = svg.node().clientHeight; const k = Math.max(0.6, Math.min(5, Math.min(w, h) / (d.r * 3.6))); if (!prevT) prevT = d3.zoomTransform(svg.node()); svg.transition().duration(480).ease(d3.easeCubicOut).call(zoom.transform, d3.zoomIdentity.translate(w / 2 - d.x * k, h / 2 - d.y * k).scale(k)); const n = d.c.subcommittees.length; toast(n ? 'Pick a lettered subcommittee inside ' + d.label + ' (' + n + ')' : d.label + ' has no subcommittees'); }
+  function zoomToHub(d) { if (!svg) return; const w = svg.node().clientWidth, h = svg.node().clientHeight; const k = Math.max(0.6, Math.min(5, Math.min(w, h) / (d.r * 3.6))); if (!prevT) prevT = d3.zoomTransform(svg.node()); svg.transition().duration(480).ease(d3.easeCubicOut).call(zoom.transform, d3.zoomIdentity.translate(w / 2 - d.x * k, h / 2 - d.y * k).scale(k)); const n = d.c.subcommittees.length; toast(n ? 'Pick a numbered subcommittee inside ' + d.label + ' (' + n + ')' : d.label + ' has no subcommittees'); }
   function hubsInScope() { if (state.scope === 'none') return []; if (state.scope === 'nuclear') return state.clist.filter(c => NUKE.includes(c.code)); return state.clist.filter(c => c.type !== 'joint'); }
   function subsInScope() { return state.scope !== 'none'; }
   function buildGraph() {
@@ -1133,6 +1119,7 @@ svg.net .node.inside .shape { transition: transform .2s cubic-bezier(.2,.8,.2,1)
     for (const p of allPeople()) add({ id: p.id, p, r: 4 + p.priority * 1.9 + (p.kind === 'senator' ? 1 : 0) });
     for (const p of allPeople()) { for (const c of (p.committees || [])) { if (idx.has('hub-' + c)) links.push({ source: 'hub-' + c, target: p.id, kind: 'member', tier: (state.clist.find(x => x.code === c) || {}).nuclear_tier || 1 }); else if (idx.has('sub-' + c)) links.push({ source: 'sub-' + c, target: p.id, kind: 'submember' }); } if (p.kind !== 'senator' && p.office_id && idx.has(p.office_id)) links.push({ source: p.office_id, target: p.id, kind: 'office' }); }
     for (const l of Object.values(state.links)) if (idx.has(l.from) && idx.has(l.to)) links.push({ source: l.from, target: l.to, kind: 'ref' });
+    for (const p of Object.values(state.extra)) for (const id of (p.works_with || [])) if (idx.has(id)) links.push({ source: id, target: p.id, kind: 'ref' });
     graph = { nodes, links };
   }
   function initMap() {
@@ -1185,7 +1172,18 @@ svg.net .node.inside .shape { transition: transform .2s cubic-bezier(.2,.8,.2,1)
   const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   function pulse(n, big) { if (!g || reduceMotion()) return; const ring = g.select('.nodes').append('circle').attr('cx', n.x).attr('cy', n.y).attr('r', n.r).attr('fill', 'none').attr('stroke', 'var(--fg)').attr('stroke-width', big ? 2 : 1.2).attr('opacity', big ? .7 : .35).style('pointer-events', 'none'); ring.transition().duration(big ? 700 : 480).ease(d3.easeCubicOut).attr('r', n.r * (big ? 3.2 : 2.6)).attr('opacity', 0).remove(); }
   function popMembers(ids) { if (!nodeSel || reduceMotion()) return; const list = graph.nodes.filter(d => ids.has(d.id) && !d.hub); const center = graph.nodes.find(x => x.id === state.selected); list.sort((a, b) => (center ? Math.hypot(a.x - center.x, a.y - center.y) - Math.hypot(b.x - center.x, b.y - center.y) : 0)); const order = new Map(list.map((d, i) => [d.id, i])); nodeSel.filter(d => order.has(d.id)).select('.shape').interrupt().attr('transform', 'scale(1)').transition().delay(d => 120 + Math.min(order.get(d.id) * 18, 520)).duration(170).ease(d3.easeCubicOut).attr('transform', 'scale(1.35)').transition().duration(260).ease(d3.easeCubicInOut).attr('transform', 'scale(1)'); for (const d of list) setTimeout(() => pulse(d, false), 120 + Math.min(order.get(d.id) * 18, 520)); }
-  function focusHub(id) { releaseFocus(false); state.selected = id; $('#main').classList.add('split'); renderRPanel(); renderCrumb(); updateMapHighlight(); const n = graph.nodes.find(x => x.id === id); if (!n || !svg) return; pulse(n, true); popMembers(focusNeighbors(id)); const w = svg.node().clientWidth, h = svg.node().clientHeight; const k = n.sub ? 2.2 : 1.3; if (!prevT) prevT = d3.zoomTransform(svg.node()); svg.transition().duration(420).ease(d3.easeCubicOut).call(zoom.transform, d3.zoomIdentity.translate(w / 2 - n.x * k, h / 2 - n.y * k).scale(k)); }
+  function focusHub(id) {
+    releaseFocus(false); state.selected = id; $('#main').classList.add('split'); renderRPanel(); renderCrumb(); updateMapHighlight(); const n = graph.nodes.find(x => x.id === id); if (!n || !svg) return; pulse(n, true); const nb = focusNeighbors(id); popMembers(nb);
+    // pull the members a little closer to their committee, then frame the whole group
+    const fl = graph.links.filter(l => { const a = l.source.id || l.source, b = l.target.id || l.target; return (l.kind === 'member' || l.kind === 'submember') && (a === id || b === id); });
+    saved = { id, pos: new Map() }; for (const x of graph.nodes) if (nb.has(x.id) && !x.hub) saved.pos.set(x.id, { x: x.x, y: x.y });
+    if (fl.length) { sim.force('focus', d3.forceLink(fl).id(d => d.id).distance(l => (n.r || 20) + (n.sub ? 110 : 150)).strength(0.45)); sim.alpha(0.5).restart(); }
+    if (!prevT) prevT = d3.zoomTransform(svg.node());
+    const frame = (ms) => setTimeout(() => { if (state.selected !== id) return; fitTo([n].concat(graph.nodes.filter(x => nb.has(x.id) && !x.hub)), ms); }, ms === 0 ? 0 : ms);
+    frame(260); frame(1100);
+  }
+  // zoom so every given node is in view, never closer than a comfortable reading scale
+  function fitTo(nodes, when) { if (!svg || !nodes.length) return; const w = svg.node().clientWidth, h = svg.node().clientHeight; const pad = 90; const xs = nodes.map(d => d.x), ys = nodes.map(d => d.y); const x0 = Math.min(...xs) - pad, x1 = Math.max(...xs) + pad, y0 = Math.min(...ys) - pad, y1 = Math.max(...ys) + pad; const k = Math.max(0.35, Math.min(2.2, Math.min(w / (x1 - x0), h / (y1 - y0)))); const cx = (x0 + x1) / 2, cy = (y0 + y1) / 2; svg.transition().duration(when > 500 ? 520 : 440).ease(d3.easeCubicOut).call(zoom.transform, d3.zoomIdentity.translate(w / 2 - cx * k, h / 2 - cy * k).scale(k)); }
   function roleOnHub(p, d) { if (!p || !d || !d.hub || !p.roles) return ''; if (d.sub) { for (const r of p.roles) for (const sc of r.subcommittees || []) if (sc.code === d.sc.code) return sc.role === 'Chair' || sc.role === 'Ranking Member' ? sc.role : ''; return ''; } const r = p.roles.find(x => x.code === d.c.code); return r && r.role !== 'Member' ? r.role : ''; }
   function hubsOf(sel) { const s = new Set(); if (!sel || /^(hub|sub)-/.test(sel)) return s; for (const l of graph.links) { const a = l.source.id || l.source, b = l.target.id || l.target; if ((l.kind === 'member' || l.kind === 'submember') && b === sel) s.add(a); } return s; }
   function popHubs(sel) { if (!nodeSel || reduceMotion()) return; const ids = hubsOf(sel); const list = graph.nodes.filter(d => d.hub && ids.has(d.id)).sort((a, b) => (b.c.nuclear_tier - a.c.nuclear_tier) || (a.sub ? 1 : 0) - (b.sub ? 1 : 0)); list.forEach((d, i) => { const sh = nodeSel.filter(x => x.id === d.id).select('.shape'); setTimeout(() => { sh.style('transform', 'scale(1.5)'); pulse(d, true); setTimeout(() => sh.style('transform', null), 240); }, 120 + i * 70); }); }
@@ -1285,14 +1283,14 @@ svg.net .node.inside .shape { transition: transform .2s cubic-bezier(.2,.8,.2,1)
   // ---------- DC clock ----------
   (function () { const f = new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', hour: '2-digit', minute: '2-digit', hour12: false }); const tick = () => { const c = $('#clock'); if (c) c.textContent = 'Washington, DC ' + f.format(new Date()) + ' ET'; }; tick(); setInterval(tick, 15000); })();
   // ---------- boot ----------
-  function renderAll() { renderToday(); renderPeople(); renderMeetings(); renderBriefs(); renderTasks(); renderBills(); renderNews(); renderDatalist(); renderTree(); if (state.page === 'person') renderNote($('#note'), byId(state.selected), false); if (state.page === 'committee') renderCommittee($('#cnote'), state.committeeView); if (state.page === 'graph') renderRPanel(); updateMapHighlight(); renderSettings(); }
+  function renderAll() { renderToday(); renderPeople(); renderMeetings(); renderTasks(); renderBills(); renderNews(); renderDatalist(); renderTree(); if (state.page === 'person') renderNote($('#note'), byId(state.selected), false); if (state.page === 'committee') renderCommittee($('#cnote'), state.committeeView); if (state.page === 'graph') renderRPanel(); updateMapHighlight(); renderSettings(); }
   async function loadData() { try { const res = await fetch('people.json'); if (res.ok) return await res.json(); } catch (e) {} const inline = document.getElementById('people-data'); if (inline) { try { return JSON.parse(inline.textContent); } catch (e) {} } return null; }
   async function boot() {
     const data = await loadData();
     if (data) { state.base = (data.people || []).map(p => Object.assign({}, p)); state.committees = data.committees || {}; state.clist = data.committee_list || []; state.asOf = data.as_of || ''; state.bills = data.bills || []; state.billsAsOf = data.bills_as_of || ''; } else $('#count').textContent = 'Roster data did not load.';
     const fc = $('#f-comm'); for (const [code, name] of [['SSEG', 'Energy & Natural Resources'], ['SSEG-EN', '  ENR / Energy subcommittee'], ['SSEV', 'Environment & Public Works'], ['SSEV-NUC', '  EPW / Nuclear Innovation & Safety'], ['SSAP', 'Appropriations'], ['SSAP-EW', '  Approps / Energy & Water'], ['SSAS', 'Armed Services'], ['SSAS-SF', '  SASC / Strategic Forces']]) fc.append(el('option', { value: code, text: name })); for (const c of state.clist.filter(c => !NUKE.includes(c.code))) { fc.append(el('option', { value: c.code, text: c.name })); for (const sc of c.subcommittees) fc.append(el('option', { value: sc.code, text: '  ' + shortC(c.code) + ' / ' + sc.name })); } for (const c of state.clist.filter(c => NUKE.includes(c.code))) for (const sc of c.subcommittees) if (!['Energy', 'Energy and Water Development', 'Strategic Forces'].includes(sc.name) && !sc.name.includes('Nuclear')) fc.append(el('option', { value: sc.code, text: '  ' + shortC(c.code) + ' / ' + sc.name }));
     if (window.d3) initMap(); else $('.graphwrap').append(el('div', { class: 'empty-map', text: 'The graph library did not load. Reload to try again.' }));
-    route(); renderAll(); connectStore(); loadNews(); loadBriefs(); setInterval(loadBriefs, 5 * 60000); window.addEventListener('focus', () => { if (Date.now() - (loadBriefs._t || 0) > 60000) { loadBriefs._t = Date.now(); loadBriefs(); } });
+    route(); renderAll(); connectStore(); loadNews(); loadDetails(); setInterval(loadDetails, 5 * 60000); window.addEventListener('focus', () => { if (Date.now() - (loadDetails._t || 0) > 60000) { loadDetails._t = Date.now(); loadDetails(); } });
     try { state.dictation = window.claude && window.claude.use ? await window.claude.use('dictation') : null; } catch (e) { state.dictation = null; }
   }
   boot();
