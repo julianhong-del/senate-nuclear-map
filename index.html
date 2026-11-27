@@ -422,7 +422,7 @@ svg.net .node.inside .shape { transition: transform .2s cubic-bezier(.2,.8,.2,1)
 (function () {
   'use strict';
   // Optional: bake in your Supabase project so teammates do not have to enter it in Settings.
-  const APP_VERSION = '2026-11-27i';
+  const APP_VERSION = '2026-11-27j';
   const SUPABASE_URL = 'https://nreuqgyxojdzqzpcxwlv.supabase.co';
   const SUPABASE_ANON_KEY = 'sb_publishable_zMrjbqvsuzX8dav-qXGd6A_Zj6MPzk1';
   // Decide the sign-in screen before anything else renders. A saved session means the person is signed in,
@@ -1129,10 +1129,10 @@ svg.net .node.inside .shape { transition: transform .2s cubic-bezier(.2,.8,.2,1)
   }
   function initMap() {
     svg = d3.select('#net'); g = svg.append('g');
-    let lblRaf = 0; zoom = d3.zoom().scaleExtent([0.12, 6]).on('zoom', (ev) => { g.attr('transform', ev.transform); zoomK = ev.transform.k; if (!lblRaf) lblRaf = requestAnimationFrame(() => { lblRaf = 0; updateLabelVisibility(); }); }); svg.call(zoom);
+    let lblRaf = 0, lblK = 0, lblAt = 0; zoom = d3.zoom().scaleExtent([0.12, 6]).on('zoom', (ev) => { g.attr('transform', ev.transform); zoomK = ev.transform.k; if (!lblRaf) lblRaf = requestAnimationFrame(() => { lblRaf = 0; const now = performance.now(); if (Math.abs(zoomK - lblK) / (lblK || 1) > 0.04 || now - lblAt > 150) { lblK = zoomK; lblAt = now; updateLabelVisibility(); } }); }).on('end', () => { lblK = zoomK; lblAt = performance.now(); updateLabelVisibility(); }); svg.call(zoom);
     svg.on('click', (ev) => { if (ev.target === svg.node()) closeFocus(); });
     g.append('g').attr('class', 'guides'); g.append('g').attr('class', 'links'); g.append('g').attr('class', 'nodes'); g.append('g').attr('class', 'labels');
-    sim = d3.forceSimulation().alphaDecay(0.025).velocityDecay(0.5).on('tick', tick); rebuildGraph(); fitMap(false); window.addEventListener('resize', () => fitMap(false));
+    sim = d3.forceSimulation().alphaDecay(0.025).velocityDecay(0.5).alphaMin(0.01).on('tick', tick); rebuildGraph(); fitMap(false); window.addEventListener('resize', () => fitMap(false));
   }
   function applyLayout() {
     if (!sim) return; const L = state.layout;
@@ -1172,7 +1172,12 @@ svg.net .node.inside .shape { transition: transform .2s cubic-bezier(.2,.8,.2,1)
     sim.nodes(graph.nodes); applyLayout(); updateMapHighlight();
   }
   function shortName(p) { if (p.kind === 'senator') { const parts = p.name.split(' '); return parts[parts.length - 1] + ' (' + p.state + ')'; } return p.name; }
-  function tick() { linkSel.attr('x1', d => d.source.x).attr('y1', d => d.source.y).attr('x2', d => d.target.x).attr('y2', d => d.target.y); nodeSel.attr('transform', d => 'translate(' + d.x + ',' + d.y + ')'); labelSel.attr('x', d => d.x).attr('y', d => d.y + d.r * (d.id === state.selected ? 1.5 : 1) + 12); }
+  // Only elements that are actually shown get moved each frame: most links and many nodes/labels are display:none at any
+  // time, and writing their coordinates sixty times a second was most of the work behind every click.
+  let liveLinkSel = null, liveNodeSel = null, liveLabelSel = null;
+  const shown = function () { return this.style.display !== 'none'; };
+  function refreshLive(labelsOnly) { if (!linkSel) return; liveLabelSel = labelSel.filter(shown); if (labelsOnly) { liveLabelSel.attr('x', d => d.x).attr('y', d => d.y + d.r * (d.id === state.selected ? 1.5 : 1) + 12); return; } liveLinkSel = linkSel.filter(shown); liveNodeSel = nodeSel.filter(shown); tick(); }
+  function tick() { const L = liveLinkSel || linkSel, N = liveNodeSel || nodeSel, T = liveLabelSel || labelSel; if (!L) return; L.attr('x1', d => d.source.x).attr('y1', d => d.source.y).attr('x2', d => d.target.x).attr('y2', d => d.target.y); N.attr('transform', d => 'translate(' + d.x + ',' + d.y + ')'); T.attr('x', d => d.x).attr('y', d => d.y + d.r * (d.id === state.selected ? 1.5 : 1) + 12); }
   function focusNeighbors(sel) { const set = new Set(); const isHub = /^(hub|sub)-/.test(sel); for (const l of graph.links) { const a = l.source.id || l.source, b = l.target.id || l.target; if (!isHub && (l.kind === 'member' || l.kind === 'submember' || l.kind === 'sub')) continue; if (a === sel) set.add(b); if (b === sel) set.add(a); } return set; }
   const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   function pulse(n, big) { if (!g || reduceMotion()) return; const ring = g.select('.nodes').append('circle').attr('cx', n.x).attr('cy', n.y).attr('r', n.r).attr('fill', 'none').attr('stroke', 'var(--fg)').attr('stroke-width', big ? 2 : 1.2).attr('opacity', big ? .7 : .35).style('pointer-events', 'none'); ring.transition().duration(big ? 700 : 480).ease(d3.easeCubicOut).attr('r', n.r * (big ? 3.2 : 2.6)).attr('opacity', 0).remove(); }
@@ -1184,21 +1189,21 @@ svg.net .node.inside .shape { transition: transform .2s cubic-bezier(.2,.8,.2,1)
     state.selected = id; $('#main').classList.add('split'); renderRPanel(); renderCrumb(); updateMapHighlight(); const n = graph.nodes.find(x => x.id === id); if (!n || !svg) return; pulse(n, true); const nb = focusNeighbors(id); popMembers(nb);
     if (!saved) saved = { id, pos: new Map() }; for (const x of graph.nodes) if (nb.has(x.id) && !x.hub && !saved.pos.has(x.id)) saved.pos.set(x.id, { x: x.x, y: x.y });
     if (!prevT) prevT = d3.zoomTransform(svg.node());
-    // pull the members a little closer, work out where they will settle, and make one camera move there while they drift in
+    // pull the members a little closer and make one camera move to where they will gather while they drift in
     const fl = graph.links.filter(l => { const a = l.source.id || l.source, b = l.target.id || l.target; return (l.kind === 'member' || l.kind === 'submember') && (a === id || b === id); });
-    const members = graph.nodes.filter(x => nb.has(x.id) && !x.hub);
-    if (fl.length) sim.force('focus', d3.forceLink(fl).id(d => d.id).distance(l => (n.r || 20) + (n.sub ? 110 : 150)).strength(0.45));
-    const box = settledBox([n].concat(members));
+    const dist = (n.r || 20) + (n.sub ? 110 : 150);
+    if (fl.length) sim.force('focus', d3.forceLink(fl).id(d => d.id).distance(dist).strength(0.45));
+    const box = gatherBox(n, dist + 60);
     sim.alpha(0.45).restart();
     fitBox(box, 650);
   }
   function hubCodeOf(sel) { if (!sel) return ''; if (sel.startsWith('hub-')) return sel.slice(4); if (sel.startsWith('sub-')) { const sb = subByCode(sel.slice(4)); return sb ? sb.c.code : ''; } return ''; }
-  // run the simulation ahead silently to see where these nodes end up, then put everything back so the live animation plays normally
-  function settledBox(nodes) {
-    const snap = graph.nodes.map(d => [d.x, d.y, d.vx, d.vy]); const a0 = sim.alpha();
-    sim.alpha(0.45); sim.tick(70);
-    const xs = nodes.map(d => d.x), ys = nodes.map(d => d.y); const box = { x0: Math.min(...xs), x1: Math.max(...xs), y0: Math.min(...ys), y1: Math.max(...ys) };
-    graph.nodes.forEach((d, i) => { d.x = snap[i][0]; d.y = snap[i][1]; d.vx = snap[i][2]; d.vy = snap[i][3]; }); sim.alpha(a0);
+  // where the members of a committee or subcommittee will gather: a ring of the link distance around it (plus, for a
+  // subcommittee drawn inside its committee, the committee circle itself). Worked out directly rather than by running
+  // the simulation ahead, which froze the page for a tenth of a second on every click.
+  function gatherBox(n, R) {
+    const box = { x0: n.x - R, x1: n.x + R, y0: n.y - R, y1: n.y + R };
+    if (n.sub && n.inside) { const h = graph.nodes.find(x => x.id === 'hub-' + n.c.code); if (h) { const hx = h.fx != null ? h.fx : h.x, hy = h.fy != null ? h.fy : h.y, hr = (h.r || 0) + 24; box.x0 = Math.min(box.x0, hx - hr); box.x1 = Math.max(box.x1, hx + hr); box.y0 = Math.min(box.y0, hy - hr); box.y1 = Math.max(box.y1, hy + hr); } }
     return box;
   }
   // zoom so the box is in view, never closer than a comfortable reading scale, in one eased move
@@ -1216,12 +1221,13 @@ svg.net .node.inside .shape { transition: transform .2s cubic-bezier(.2,.8,.2,1)
     linkSel.classed('hidden', d => d.kind === 'ref' && !(sel && ((d.source.id || d.source) === sel || (d.target.id || d.target) === sel))).classed('lit', d => (d.kind === 'member' || d.kind === 'submember') && !!selP && (d.target.id || d.target) === sel)
       .classed('dim', d => { const a = d.source.id || d.source, b = d.target.id || d.target; if (sel) return !(a === sel || b === sel); return !(visible(nodeById.get(a)) && visible(nodeById.get(b))); })
       .style('display', d => { const a = d.source.id || d.source, b = d.target.id || d.target; const na = nodeById.get(a), nb2 = nodeById.get(b); if (d.kind === 'sub' && nb2 && nb2.inside) return 'none'; if (state.layout !== 'committee' && (d.kind === 'member' || d.kind === 'sub' || d.kind === 'submember')) return 'none'; if ((d.kind === 'sub' || d.kind === 'submember') && !((na && na.sub && subShown(na)) || (nb2 && nb2.sub && subShown(nb2)))) return 'none'; if (d.kind === 'submember' && sel && !(a === sel || b === sel || sel === 'hub-' + (na && na.sub ? na.c.code : ''))) return 'none'; if (d.kind === 'ref' && !(sel && (a === sel || b === sel))) return 'none'; if (!state.hideFiltered) return null; return (visible(na) && visible(nb2)) ? null : 'none'; });
-    updateLabelVisibility();
+    updateLabelVisibility(); refreshLive();
   }
   function updateLabelVisibility() {
     if (!labelSel) return; const sel = state.selected; const nb = sel ? focusNeighbors(sel) : new Set(); const visible = (d) => d.hub || matches(d.p); const selP = sel && !/^(hub|sub)-/.test(sel) ? byId(sel) : null; const hubNb = hubsOf(sel);
     labelSel.filter(d => d.hub).text(d => { const base = (d.sub && d.inside ? d.letter + ' · ' : '') + (d.sub ? (d.label.length > 28 ? d.label.slice(0, 26) + '…' : d.label) : d.label); const role = hubNb.has(d.id) ? roleOnHub(selP, d) : ''; return role ? base + ' · ' + (role === 'Ranking Member' ? 'Ranking' : role) : base; }).classed('litlbl', d => d.hub && hubNb.has(d.id));
     labelSel.style('display', d => { if (d.sub) { if (state.layout !== 'committee') return 'none'; if (d.inside) return d.id === sel ? null : 'none'; const shown = state.scope === 'all' || (sel && (sel === d.id || sel === 'hub-' + d.c.code || nb.has(d.id) || hubNb.has(d.id))); if (!shown) return 'none'; return (zoomK >= 1.2 || d.id === sel || (sel && sel === 'hub-' + d.c.code) || nb.has(d.id) || hubNb.has(d.id)) ? null : 'none'; } if (d.hub) return state.layout === 'committee' ? null : 'none'; if (!visible(d) && state.hideFiltered) return 'none'; const show = state.showAllLabels || d.p.priority >= 5 || d.id === sel || nb.has(d.id) || d.p.user_added || (state.filters.q && visible(d)) || zoomK >= 1.35 || (zoomK >= 1.0 && d.p.priority >= 4); return show ? null : 'none'; }).style('opacity', d => { if (sel) return d.id === sel || nb.has(d.id) || d.hub ? 1 : 0.2; if (d.hub || d.p.priority >= 5 || state.showAllLabels) return 1; return Math.max(0.35, Math.min(1, (zoomK - 0.8) / 0.8)); });
+    refreshLive(true);
   }
   function fitMap(animate = true) { if (!svg) return; const w = svg.node().clientWidth, h = svg.node().clientHeight; if (!w || !h) return; const extent = state.layout === 'state' ? 1700 : state.layout === 'priority' ? 1450 : (state.scope === 'none' ? 1200 : state.scope === 'all' ? 1900 : 1650); const t = d3.zoomIdentity.translate(w / 2, h / 2).scale(Math.min(1.4, Math.min(w, h) / extent)); (animate ? svg.transition().duration(750).ease(d3.easeCubicInOut) : svg).call(zoom.transform, t); }
   function zoomBy(k) { if (!svg) return; svg.transition().duration(350).ease(d3.easeCubicOut).call(zoom.scaleBy, k); }
